@@ -50,27 +50,23 @@ export class TSVFileReader implements FileReader {
       publicationDate: publicationDate ? new Date(publicationDate) : new Date(),
       city: City[city as City],
       previewImg: previewImg || "",
-      images: this.parseStringToArray(images || ""),
+      images: this.parseStringToArray<string[]>(images || ""),
       isPremium: Boolean(isPremium),
       rating: parseInt(rating as string, 10),
       type: type as OfferType,
       flatCount: parseInt(flatCount as string, 10),
       guestCount: parseInt(guestCount as string, 10),
       cost: parseInt(cost as string, 10),
-      conveniences: this.parseStringToConvenienceTypeArray(conveniences || ""),
+      conveniences: this.parseStringToArray<ConvenienceType[]>(conveniences || ""),
       author: this.parseUser(author || ""),
       commentCount: parseInt(commentCount as string, 10),
       coordinate: this.parseStringToCoordinate(coordinate || "")
     };
   }
 
-  private parseStringToArray(valueStr: string): string[] {
-    return valueStr.split(';'); 
+  private parseStringToArray<T>(valueStr: string): T {
+    return valueStr.split(';') as T; 
   };
-
-  private parseStringToConvenienceTypeArray(valueStr: string): ConvenienceType[] {
-    return valueStr.split(';') as ConvenienceType[]; 
-  }
 
   private parseStringToCoordinate(valueStr: string): Coordinate {
     const [latitude, longitude] = valueStr.split(';');
@@ -98,7 +94,7 @@ export class TSVFileReader implements FileReader {
 
   public toArray(): Offer[] {
     this.validateRawData();
-    console.log(this.parseRawDataToOffers());
+    // console.log(this.parseRawDataToOffers());
     return this.parseRawDataToOffers();
   }
 }
