@@ -45,28 +45,28 @@ export class TSVFileReader implements FileReader {
     ] = line.split('\t');
 
     return {
-      title: title || "",
-      description: description || "",
+      title: title || '',
+      description: description || '',
       publicationDate: publicationDate ? new Date(publicationDate) : new Date(),
       city: City[city as City],
-      previewImg: previewImg || "",
-      images: this.parseStringToArray<string[]>(images || ""),
+      previewImg: previewImg || '',
+      images: this.parseStringToArray<string[]>(images || ''),
       isPremium: Boolean(isPremium),
       rating: parseInt(rating as string, 10),
       type: type as OfferType,
       flatCount: parseInt(flatCount as string, 10),
       guestCount: parseInt(guestCount as string, 10),
       cost: parseInt(cost as string, 10),
-      conveniences: this.parseStringToArray<ConvenienceType[]>(conveniences || ""),
-      author: this.parseUser(author || ""),
+      conveniences: this.parseStringToArray<ConvenienceType[]>(conveniences || ''),
+      author: this.parseUser(author || ''),
       commentCount: parseInt(commentCount as string, 10),
-      coordinate: this.parseStringToCoordinate(coordinate || "")
+      coordinate: this.parseStringToCoordinate(coordinate || '')
     };
   }
 
   private parseStringToArray<T>(valueStr: string): T {
-    return valueStr.split(';') as T; 
-  };
+    return valueStr.split(';') as T;
+  }
 
   private parseStringToCoordinate(valueStr: string): Coordinate {
     const [latitude, longitude] = valueStr.split(';');
@@ -78,12 +78,12 @@ export class TSVFileReader implements FileReader {
 
   private parseUser(fullName: string): User {
     const [firstName, lastName] = fullName.split(' ');
-    return { 
-      firstName: firstName || "",
-      lastName: lastName || "",
-      email: "",
-      avatarPath: "",
-      password: "",
+    return {
+      firstName: firstName || '',
+      lastName: lastName || '',
+      email: '',
+      avatarPath: '',
+      password: '',
       type: UserType.REGULAR,
     };
   }

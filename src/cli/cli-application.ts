@@ -16,10 +16,10 @@ export class CLIApplication {
     //   this.commands[command.getName()] = command;
     // });
 
-    this.commands = commandList.reduce((commandList, command) => ({
-      ...commandList,
+    this.commands = commandList.reduce((commandArr, command) => ({
+      ...commandArr,
       [command.getName()]: command,
-    }), {})
+    }), {});
   }
 
   public getCommand(commandName: string): Command {
@@ -30,7 +30,7 @@ export class CLIApplication {
     if (!this.commands[this.defaultCommand]) {
       throw new Error(`The default command (${this.defaultCommand}) is not registered.`);
     }
-    
+
     return this.commands[this.defaultCommand]!;
   }
 
