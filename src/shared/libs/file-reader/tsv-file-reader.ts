@@ -1,29 +1,21 @@
-import { readFileSync } from 'node:fs';
+import EventEmitter from 'node:events';
+import { createReadStream } from 'node:fs';
 
 import { FileReader } from './file-reader.interface.js';
 
 import { User, Offer, OfferType, City, ConvenienceType, UserType, Coordinate } from '../../types/index.js';
+import { DECIMAL_RADIX, ENCODING_DEFAULT } from '../../constants/index.js';
 
-export class TSVFileReader implements FileReader {
-  private rawData = '';
+export class TSVFileReader extends EventEmitter implements FileReader {
+  private CHUNK_SIZE = 16384;
 
   constructor(
     private readonly filename: string
-  ) {}
-
-  private validateRawData(): void {
-    if (! this.rawData) {
-      throw new Error('File was not read');
-    }
+  ) {
+    super();
   }
 
-  private parseRawDataToOffers(): Offer[] {
-    return this.rawData
-      .split('\n')
-      .filter((row) => row.trim().length)
-      .map((line) => this.parseLineToOffer(line));
-  }
-
+  // INFO: Разбор строки на отдельный сущности предложения
   private parseLineToOffer(line: string): Offer {
     const [
       title,
@@ -50,22 +42,22 @@ export class TSVFileReader implements FileReader {
       publicationDate: publicationDate ? new Date(publicationDate) : new Date(),
       city: City[city as City],
       previewImg: previewImg || '',
-      images: this.parseStringToArray<string[]>(images || ''),
+      images: this.parseStringToArray<string>(images || '', ','),
       isPremium: Boolean(isPremium),
-      rating: parseInt(rating as string, 10),
+      rating: parseInt(rating as string, DECIMAL_RADIX),
       type: type as OfferType,
-      flatCount: parseInt(flatCount as string, 10),
-      guestCount: parseInt(guestCount as string, 10),
-      cost: parseInt(cost as string, 10),
-      conveniences: this.parseStringToArray<ConvenienceType[]>(conveniences || ''),
+      flatCount: parseInt(flatCount as string, DECIMAL_RADIX),
+      guestCount: parseInt(guestCount as string, DECIMAL_RADIX),
+      cost: parseInt(cost as string, DECIMAL_RADIX),
+      conveniences: this.parseStringToArray<ConvenienceType>(conveniences || '', ','),
       author: this.parseUser(author || ''),
-      commentCount: parseInt(commentCount as string, 10),
+      commentCount: parseInt(commentCount as string, DECIMAL_RADIX),
       coordinate: this.parseStringToCoordinate(coordinate || '')
     };
   }
 
-  private parseStringToArray<T>(valueStr: string): T {
-    return valueStr.split(';') as T;
+  private parseStringToArray<T>(valueStr: string, separator: string): T[] {
+    return valueStr.split(separator) as T[];
   }
 
   private parseStringToCoordinate(valueStr: string): Coordinate {
@@ -88,13 +80,29 @@ export class TSVFileReader implements FileReader {
     };
   }
 
-  public read(): void {
-    this.rawData = readFileSync(this.filename, { encoding: 'utf-8' });
-  }
+  // INFO: Метод импорта из файла
+  public async read(): Promise<void> {
+    const readStream = createReadStream(this.filename, {
+      highWaterMark: this.CHUNK_SIZE,
+      encoding: ENCODING_DEFAULT,
+    });
 
-  public toArray(): Offer[] {
-    this.validateRawData();
-    // console.log(this.parseRawDataToOffers());
-    return this.parseRawDataToOffers();
+    let remainingData = '';
+    let nextLinePosition = -1;
+    let importedRowCount = 0;
+
+    for await (const chunk of readStream) {
+      remainingData += chunk.toString();
+
+      while ((nextLinePosition = remainingData.indexOf('\n')) >= 0) {
+        const completeRow = remainingData.slice(0, nextLinePosition + 1);
+        remainingData = remainingData.slice(++nextLinePosition);
+        importedRowCount++;
+
+        const parsedOffer = this.parseLineToOffer(completeRow);
+        this.emit('line', parsedOffer);
+      }
+    }
+    this.emit('end', importedRowCount);
   }
 }
