@@ -21,6 +21,7 @@
     "outDir": "./dist",
     "emitDecoratorMetadata": true,
     "noUncheckedIndexedAccess": true,
+    "strictPropertyInitialization": true,
     "types": [
       "node",
     ],

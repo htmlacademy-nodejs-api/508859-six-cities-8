@@ -6,3 +6,5 @@ export { OfferType } from './offer-type.enum.js';
 export { UserType } from './user-type.enum.js';
 export { Coordinate } from './coordinate.type.js';
 export { City } from './city.enum.js';
+
+export { MockServerData } from './mock-server-data.type.js';
