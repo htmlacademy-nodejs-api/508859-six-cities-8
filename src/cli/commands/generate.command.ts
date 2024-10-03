@@ -14,26 +14,26 @@ import { DECIMAL_RADIX } from '../../shared/constants/index.js';
 // Example: ./cli.js --generate 10 ./src/mocks/mock-offers.tsv http://localhost:3123/api
 // npm run ts ./src/main.cli.ts -- --generate 100 ./src/mocks/test-data.tsv http://localhost:3123/api
 export class GenerateCommand implements Command {
-    private initialData?: MockServerData;
+  private initialData?: MockServerData;
 
-    private async write(filepath: string, offerCount: number) {
-      if (this.initialData) {
-        const tsvOfferGenerator = new TSVOfferGenerator(this.initialData);
-        const tsvFileWriter = new TSVFileWriter(filepath);
+  private async write(filepath: string, offerCount: number) {
+    if (this.initialData) {
+      const tsvOfferGenerator = new TSVOfferGenerator(this.initialData);
+      const tsvFileWriter = new TSVFileWriter(filepath);
 
-        for (let i = 0; i < offerCount; i++) {
-          await tsvFileWriter.write(tsvOfferGenerator.generate());
-        }
+      for (let i = 0; i < offerCount; i++) {
+        await tsvFileWriter.write(tsvOfferGenerator.generate());
       }
     }
+  }
 
-    private async load(url: string) {
-      try {
-        this.initialData = await got.get(url).json();
-      } catch {
-        throw new Error(`Can't load data from ${url}`);
-      }
+  private async load(url: string) {
+    try {
+      this.initialData = await got.get(url).json();
+    } catch {
+      throw new Error(`Can't load data from ${url}`);
     }
+  }
 
   public getName(): string {
     return '--generate';
@@ -44,14 +44,14 @@ export class GenerateCommand implements Command {
     const [count, filepath, url] = parameters;
     if (count && filepath && url) {
       const offerCount = Number.parseInt(count, DECIMAL_RADIX);
-  
+
       try {
         await this.load(url);
         await this.write(filepath, offerCount);
         console.info(chalk.green(`File ${filepath} was created!`));
       } catch (error: unknown) {
         console.error(chalk.redBright('Can\'t generate data'));
-  
+
         console.error(getErrorMessage(error));
       }
     }
