@@ -1,4 +1,4 @@
-import { City } from './city.enum.js'
+import { City } from './city.enum.js';
 import { ConvenienceType } from './convenience.type.js';
 import { Coordinate } from './coordinate.type.js';
 import { OfferType } from './offer-type.enum.js';
@@ -20,5 +20,4 @@ export interface MockServerData {
     authors: string[],
     commentCounts: number[],
     coordinates: Coordinate[]
-};
-  
+}

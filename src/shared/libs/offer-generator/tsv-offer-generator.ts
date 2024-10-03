@@ -13,11 +13,11 @@ export class TSVOfferGenerator implements OfferGenerator {
     const title = getRandomItem<string>(this.mockData.titles);
     const description = getRandomItem<string>(this.mockData.descriptions);
     const publicationDate = dayjs()
-    .subtract(generateRandomValue(FIRST_WEEK_DAY, LAST_WEEK_DAY), 'day')
-    .toISOString();
+      .subtract(generateRandomValue(FIRST_WEEK_DAY, LAST_WEEK_DAY), 'day')
+      .toISOString();
     const city = getRandomItem<City>(this.mockData.cities);
-    const previewImg = getRandomItem<string>(this.mockData.previewImgs)
-    const images = getRandomItems<string>(this.mockData.images).join(";");
+    const previewImg = getRandomItem<string>(this.mockData.previewImgs);
+    const images = getRandomItems<string>(this.mockData.images).join(';');
     const isPremium = String(this.mockData.isPremuimArr[generateRandomValue(0, 1)]);
     const rating = getRandomItem<number>(this.mockData.ratings).toString();
     const type = getRandomItem<OfferType>(this.mockData.types).toString();
@@ -36,7 +36,7 @@ export class TSVOfferGenerator implements OfferGenerator {
     return [
       title, description, publicationDate,
       city, previewImg, images, isPremium, rating,
-      type, flatCount, guestCount, cost, conveniences, 
+      type, flatCount, guestCount, cost, conveniences,
       author, commentCount, currentCoordinate
     ].join('\t');
   }
