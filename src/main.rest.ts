@@ -8,13 +8,13 @@ import { COMPONENT } from './shared/constants/index.js';
 
 // INFO: Точка входа в приложение
 async function bootstrap() {
-    const container = new Container();
-    container.bind<RestApplication>(COMPONENT.REST_APPLICATION).to(RestApplication).inSingletonScope();
-    container.bind<Logger>(COMPONENT.LOGGER).to(PinoLogger).inSingletonScope();
-    container.bind<Config<IRestSchema>>(COMPONENT.CONFIG).to(RestConfig).inSingletonScope();
+  const container = new Container();
+  container.bind<RestApplication>(COMPONENT.REST_APPLICATION).to(RestApplication).inSingletonScope();
+  container.bind<Logger>(COMPONENT.LOGGER).to(PinoLogger).inSingletonScope();
+  container.bind<Config<IRestSchema>>(COMPONENT.CONFIG).to(RestConfig).inSingletonScope();
 
-    const application = container.get<RestApplication>(COMPONENT.REST_APPLICATION);
-    await application.init();
+  const application = container.get<RestApplication>(COMPONENT.REST_APPLICATION);
+  await application.init();
 }
 
 bootstrap();
