@@ -23,4 +23,28 @@ export const configRestSchema = convict<IRestSchema>({
     env: 'DB_HOST',
     default: null
   },
+  DB_USER: {
+    doc: 'Username to connect to the database',
+    format: String,
+    env: 'DB_USER',
+    default: null
+  },
+  DB_PASSWORD: {
+    doc: 'Password to connect to the database',
+    format: String,
+    env: 'DB_PASSWORD',
+    default: null
+  },
+  DB_PORT: {
+    doc: 'Port to connect to the database (MongoDB)',
+    format: 'port',
+    env: 'DB_PORT',
+    default: null
+  },
+  DB_NAME: {
+    doc: 'Database name (MongoDB)',
+    format: String,
+    env: 'DB_NAME',
+    default: 'six-cities'
+  },
 });

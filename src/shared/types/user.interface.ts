@@ -5,6 +5,6 @@ export interface User {
     lastName: string;
     email: string;
     avatarPath: string;
-    password: string;
+    password?: string;
     type: UserType;
 }
