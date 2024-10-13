@@ -100,6 +100,12 @@ npm run mock:server
 npm run ts ./src/main.cli.ts -- --generate 100 ./mocks/test-data.tsv http://localhost:3123/api
 ```
 
+### --import
+
+```bash
+npm run ts ./src/main.cli.ts -- --import ./src/mocks/test-data.tsv admin test localhost six-sities secret
+```
+
 ```bash
 ./cli.js --generate 10 ./mocks/mock-offers.tsv http://localhost:3123/api
 ```

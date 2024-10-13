@@ -6,8 +6,11 @@ import { DatabaseClient } from './database-client.interface.js';
 import { Logger } from '../logger/index.js';
 import { COMPONENT } from '../../constants/component.constant.js';
 
-const RETRY_COUNT = 5;
-const RETRY_TIMEOUT = 1000;
+
+enum RetryParam {
+  Count = 5,
+  Timeout = 1000
+}
 
 @injectable()
 export class MongoDatabaseClient implements DatabaseClient {
@@ -19,10 +22,10 @@ export class MongoDatabaseClient implements DatabaseClient {
   ) {
     this.isConnected = false;
   }
-
+  // TODO: public get
   public isConnectedToDatabase() {
-    // TODO: Заменить на параметр от mongo
-    return this.isConnected;
+    // TODO: Заменить на параметр от mongoose
+    return this.isConnected; // this.mongoose?.instance?.isConnected
   }
 
   public async connect(uri: string): Promise<void> {
@@ -33,7 +36,7 @@ export class MongoDatabaseClient implements DatabaseClient {
     this.logger.info('Trying to connect to MongoDB…');
 
     let attempt = 0;
-    while (attempt < RETRY_COUNT) {
+    while (attempt < RetryParam.Count) {
       try {
         this.mongoose = await Mongoose.connect(uri);
         this.isConnected = true;
@@ -42,11 +45,11 @@ export class MongoDatabaseClient implements DatabaseClient {
       } catch (error) {
         attempt++;
         this.logger.error(`Failed to connect to the database. Attempt ${attempt}`, error as Error);
-        await setTimeout(RETRY_TIMEOUT);
+        await setTimeout(RetryParam.Timeout);
       }
     }
 
-    throw new Error(`Unable to establish database connection after ${RETRY_COUNT}`);
+    throw new Error(`Unable to establish database connection after ${RetryParam.Count}`);
   }
 
   public async disconnect(): Promise<void> {

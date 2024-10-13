@@ -8,7 +8,10 @@ import { DatabaseClient, MongoDatabaseClient } from '../../shared/libs/database-
 import { Logger } from '../../shared/libs/logger/index.js';
 import { ConsoleLogger } from '../../shared/libs/logger/console.logger.js';
 import { DefaultUserService } from '../../shared/modules/user/default-user.service.js';
-import { DEFAULT_DB_PORT, DEFAULT_USER_PASSWORD } from './command.constant.js';
+
+const DEFAULT_USER_PASSWORD = '123456';
+// TODO: Доставать из .env переменных
+const DEFAULT_DB_PORT = '27017';
 
 export class ImportCommand implements Command {
 
@@ -32,10 +35,6 @@ export class ImportCommand implements Command {
     return '--import';
   }
 
-  // private onImportedOffer(offer: Offer): void {
-  //   console.info(offer);
-  // }
-
   private onCompleteImport(count: number) {
     console.info(`${count} rows imported.`);
     this.databaseClient.disconnect();
@@ -47,9 +46,9 @@ export class ImportCommand implements Command {
   }
 
   private async saveOffer(offer: Offer) {
-    // const categories: string[] = [];
     const user = await this.userService.findOrCreate({
       ...offer.author, // offer.user
+      email: 'ilkolmakov@yandex.ru',
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
 
@@ -79,7 +78,8 @@ export class ImportCommand implements Command {
     });
 
   }
-
+  
+  // TODO: В --help команду нужно добавить аргументы, которые передаем
   public async execute(filename: string, login: string, password: string, host: string, dbname: string, salt: string): Promise<void> {
     const uri = getMongoURI(login, password, host, DEFAULT_DB_PORT, dbname);
     this.salt = salt;

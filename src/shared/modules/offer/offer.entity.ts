@@ -21,44 +21,45 @@ import {
     @prop({ trim: true, required: true })
     public title!: string;
   
-    @prop({ trim: true })
+    @prop({ trim: true, required: true })
     public description!: string;
   
-    @prop()
+    @prop({ required: true })
     public publicationDate!: Date;
   
-    @prop({ enum: City })
+    @prop({ type: () => String, enum: City, required: true })
     public city!: City;
   
-    @prop()
-    public previewImg!: number;
+    @prop({ required: true })
+    public previewImg!: string;
     
-    @prop()
+    @prop({ type: () => [String], required: true })
     public images!: string[];
     
-    @prop()
+    @prop({ required: true })
     public isPremium!: boolean;
     
-    @prop()
+    @prop({ required: true })
     public rating!: number;
 
     @prop({
       type: () => String,
-      enum: OfferType
+      enum: OfferType,
+      required: true
     })
     public type!: OfferType;
 
-    @prop()
+    @prop({ required: true })
     public flatCount!: number;
 
-    @prop()
+    @prop({ required: true })
     public guestCount!: number;
 
-    @prop()
+    @prop({ required: true })
     public cost!: number;
 
-    @prop()
-    public conveniences!: ConvenienceType;
+    @prop({ type: [String], required: true })
+    public conveniences!: ConvenienceType[];
 
     @prop({
       ref: () => UserEntity,
@@ -69,7 +70,7 @@ import {
     @prop({default: 0})
     public commentCount!: number;
     
-    @prop()
+    @prop({ required: true })
     public coordinate!: Coordinate;
   }
   

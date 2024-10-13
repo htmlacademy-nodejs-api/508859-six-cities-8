@@ -45,6 +45,6 @@ export const configRestSchema = convict<IRestSchema>({
     doc: 'Database name (MongoDB)',
     format: String,
     env: 'DB_NAME',
-    default: 'six-cities'
+    default: null
   },
 });

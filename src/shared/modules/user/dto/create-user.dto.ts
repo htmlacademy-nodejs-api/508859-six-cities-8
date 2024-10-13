@@ -5,6 +5,7 @@ import { UserType } from '../../../types/user-type.enum.js';
 
 export class CreateUserDto {
     public email!: string;
+    // TODO: Указываем дефолтное значение и поле необязательно
     public avatarPath!: string;
     public firstName!: string;
     public lastName!: string;

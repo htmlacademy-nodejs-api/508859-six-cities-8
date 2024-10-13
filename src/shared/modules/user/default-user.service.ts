@@ -18,6 +18,7 @@ export class DefaultUserService implements UserService {
 
   public async create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
     const user = new UserEntity(dto);
+    // TODO: Не устанавливать пароль в сервисе - должен хэшироваться в конструкторе UserEntity
     user.setPassword(dto.password, salt);
 
     const result = await this.userModel.create(user);
