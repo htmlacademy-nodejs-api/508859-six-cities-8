@@ -40,11 +40,11 @@ export class RestApplication {
       avatarPath: 'keks.jpg',
       firstname: 'Keks',
       lastname: 'Unknown'
-     });
+    });
 
-     const error = user.validateSync();
-     console.log(error);
-  
+    const error = user.validateSync();
+    console.log(error);
+
     //  console.log(user);
   }
 }

@@ -78,7 +78,7 @@ export class ImportCommand implements Command {
     });
 
   }
-  
+
   // TODO: В --help команду нужно добавить аргументы, которые передаем
   public async execute(filename: string, login: string, password: string, host: string, dbname: string, salt: string): Promise<void> {
     const uri = getMongoURI(login, password, host, DEFAULT_DB_PORT, dbname);
@@ -100,22 +100,22 @@ export class ImportCommand implements Command {
 }
 
 
-  // public async execute(...parameters: string[]): Promise<void> {
-  //   const [filename] = parameters;
+// public async execute(...parameters: string[]): Promise<void> {
+//   const [filename] = parameters;
 
-  //   let fileReader;
-  //   if (filename) {
-  //     fileReader = new TSVFileReader(filename.trim());
+//   let fileReader;
+//   if (filename) {
+//     fileReader = new TSVFileReader(filename.trim());
 
-  //     fileReader.on('line', this.onImportedOffer);
-  //     fileReader.on('end', this.onCompleteImport);
-  //   }
+//     fileReader.on('line', this.onImportedOffer);
+//     fileReader.on('end', this.onCompleteImport);
+//   }
 
-  //   try {
-  //     fileReader?.read();
-  //   } catch (err) {
-  //     console.error(chalk.red(`Can't import data from file: ${filename}`));
-  //     console.error(getErrorMessage(err));
-  //   }
-  // }
+//   try {
+//     fileReader?.read();
+//   } catch (err) {
+//     console.error(chalk.red(`Can't import data from file: ${filename}`));
+//     console.error(getErrorMessage(err));
+//   }
+// }
 // }

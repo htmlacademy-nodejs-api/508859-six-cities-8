@@ -1,44 +1,46 @@
 import {
-    defaultClasses,
-    getModelForClass,
-    modelOptions,
-    prop,
-    Ref
-  } from '@typegoose/typegoose';
-  
-  import { City, ConvenienceType, Coordinate, OfferType } from '../../types/index.js';
-  import { UserEntity } from '../user/index.js';
-  
-  export interface OfferEntity extends defaultClasses.Base {}
-  
+  defaultClasses,
+  getModelForClass,
+  modelOptions,
+  prop,
+  Ref
+} from '@typegoose/typegoose';
+
+import { City, ConvenienceType, Coordinate, OfferType } from '../../types/index.js';
+import { UserEntity } from '../user/index.js';
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export interface OfferEntity extends defaultClasses.Base {}
+
   @modelOptions({
     schemaOptions: {
       collection: 'offers',
       timestamps: true,
     }
   })
-  export class OfferEntity extends defaultClasses.TimeStamps {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+export class OfferEntity extends defaultClasses.TimeStamps {
     @prop({ trim: true, required: true })
-    public title!: string;
-  
+  public title!: string;
+
     @prop({ trim: true, required: true })
     public description!: string;
-  
+
     @prop({ required: true })
     public publicationDate!: Date;
-  
+
     @prop({ type: () => String, enum: City, required: true })
     public city!: City;
-  
+
     @prop({ required: true })
     public previewImg!: string;
-    
+
     @prop({ type: () => [String], required: true })
     public images!: string[];
-    
+
     @prop({ required: true })
     public isPremium!: boolean;
-    
+
     @prop({ required: true })
     public rating!: number;
 
@@ -69,9 +71,9 @@ import {
 
     @prop({default: 0})
     public commentCount!: number;
-    
+
     @prop({ required: true })
     public coordinate!: Coordinate;
-  }
-  
-  export const OfferModel = getModelForClass(OfferEntity);
+}
+
+export const OfferModel = getModelForClass(OfferEntity);

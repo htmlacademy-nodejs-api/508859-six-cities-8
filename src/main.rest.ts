@@ -12,7 +12,7 @@ async function bootstrap() {
   const appContainer = Container.merge(
     createRestApplicationContainer(),
     createUserContainer(),
-    createOfferContainer(), 
+    createOfferContainer(),
   );
 
   const application = appContainer.get<RestApplication>(COMPONENT.REST_APPLICATION);
