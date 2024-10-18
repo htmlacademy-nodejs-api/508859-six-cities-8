@@ -1,0 +1,844 @@
+openapi: 3.0.3
+info:
+  title: API сервер для проекта «Шесть городов».
+  description: |-
+    * Список ресурсов и маршрутов сервера «Шесть городов».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+  - name: offers
+    description: Действия с предложениями об аренде.
+  - name: comments
+    description: Действия с комментариями.
+  - name: users
+    description: Действия с пользователем.
+
+paths:
+  /offers:
+    get:
+      tags:
+        - offers
+      summary: Список предложений по аренде
+      description: Показывает список предложений по аренде.
+      parameters:
+        - name: limit
+          in: query
+          description: Количество возвращаемых предложений.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "Показ списка предложений. Массив с предложениями."
+          content:
+            application/json:
+              schema:
+                # offers:
+                type: array
+                items:
+                  $ref: '#/components/schemas/publicOffer'
+        "400":
+          description: "Ошибка показа предложений"
+
+    post:
+      tags:
+        - offers
+      summary: Создание нового предложения
+      description: Создает новое предложение.
+      requestBody:
+        description: Информация для создания нового предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOffer'
+        required: true
+
+      responses:
+        "201":
+          description: Предложение создано. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "400":
+          description: Неверные параметры для создания предложения.
+        
+        "403":
+          description: Нет доступа на создание предложения.
+
+      
+
+  /offers/{offerId}:
+    get:
+      tags:
+        - offers
+      summary: Детальный просмотр предложений об аренде
+      description: Просмотреть текущее предложение по аренде
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Детальный показ предложения. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "404":
+          description: Не существует предложение.
+    put:
+      tags:
+        - offers
+      summary: Редактирование предложения
+      description: Редактирование существующего проедложения.
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Информация для редактирования нового предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOffer'
+        required: true
+
+      responses:
+        "200":
+          description: Предложение отредактировано. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+        "400":
+          description: Неверные параметры при редактировании предложения.
+          
+        "403":
+          description: Нет доступа при редактировании предложения.
+
+        "404":
+          description: Не существует текущее предложение.
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление предложения 
+      description: Удаление существующего проедложения.
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Предложение удалено. Идентификатор предложения.
+          content:
+            application/json:
+              schema:
+                  type: object
+
+                  properties:
+                    id:
+                      type: string
+                      example: 6329c3d6a04ab1061c6425ea
+      
+        "403":
+          description: Нет доступа для удаления предложения.
+
+        "404":
+          description: Не существует предложения для удаления.
+  
+  /offers/{offerId}/comments:
+    get:
+      tags:
+        - comments
+      summary: Список комментариев для предложения
+      description: Просмотреть текущее предложение по аренде
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Показ всех комментариев к предложению. Объект со списком комментариев.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment'
+
+        "400":
+          description: Не верный формат идентификатора предложения
+
+        "404":
+          description: Комментариев к текущему предложению не найдены.
+    post:
+      tags:
+        - comments
+      summary: Добавление нового комментария
+      description: Добавить новый комментарий к предложению.
+      parameters:
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Информация для редактирования нового предложения.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createComment'
+        required: true
+      responses:
+        "201":
+          description: Создание нового комментария. Возвращается идентификатор комментария.
+          content:
+            application/json:
+              schema:
+                type: object
+
+                properties:
+                  id:
+                    type: string
+                    example: 6329c3d6a04ab1061c6425ea
+
+        "400":
+          description: Не верный формат создания комментария.
+
+        "401":
+          description: Нет доступа для добавления комментария.
+
+  /offers/premium:
+    get:
+      tags:
+        - offers
+      summary: Список премиальных предложений по определенному городу
+      description: Показывает список премиальных предложений по аренде в определенном городе.
+      parameters:
+        - name: city
+          in: query
+          description: Город выбора премиальных предложений.
+          schema:
+            type: string
+            enum:
+              - "Paris"
+              - "Cologne"
+              - "Brussels"
+              - "Amsterdam"
+              - "Hamburg"
+              - "Dusseldorf"
+            example: Amsterdam
+      responses:
+        "200":
+          description: "Показ списка премиальных предложений. Массив с предложениями."
+          content:
+            application/json:
+              schema:
+                # offers:
+                type: array
+                items:
+                  $ref: '#/components/schemas/publicOffer'
+        "400": 
+            description: "Неверный формат параметров"
+
+       
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя.
+
+      requestBody:
+        description: Информация для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "409":
+          description: Пользователь с таким email уже существует.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя на основе логина и пароля.
+      requestBody:
+        description: Информация для логина.
+        content:
+          application/json:
+            schema:
+              type: object
+
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: ilkolmakov@mail.ru
+                password:
+                  type: string
+                  format: password
+                  example: 123456
+        required: true
+      responses:
+        "200":
+          description: Пользователь аутентифицирован. Возвращается токен.
+          content:
+            application/json:
+              schema:
+                type: object
+
+                properties:
+                  token:
+                    type: string
+
+        "400":
+          description: Логин или пароль не верен.
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Возвращает информацию по авторизованному пользователю.
+      responses:
+        "200":
+          description: Данные пользователя. Пользователь аутентифицирован.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "401":
+          description: Пользователь не зашел в систему.
+
+  /users/logout:
+    get:
+      tags: 
+        - users
+      summary: Выход из закрытой части приложения
+      description: Разлогин из закрытой части приложения.
+      responses:
+        "204":
+          description: Пользователь успешно вышел из системы.
+
+        "401":
+          description: Пользователь не зашел в систему.
+
+  /users/{userId}/favorites:
+    get:
+      tags: 
+        - users
+      summary: Список избранных предложений
+      description: Показывает список избранных предложений у пользователя.
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+      responses:
+        "200":
+          description: "Показ списка избранных предложений у пользователя. Массив с предложениями."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/publicOffer'
+        "400": 
+            description: "Неверный формат параметров."
+        "404":
+            description: "Текущего пользователя не существует."
+    post: 
+      tags: 
+        - users
+      summary: Добавление или удаление избранных предложений
+      description: Добавляет или удаляет избранное предложение у пользователя.
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+      requestBody:
+        description: Информация обновления избранных предложений.
+        content:
+          application/json:
+            schema:
+              type: object
+
+              properties:
+                isFavorite:
+                  type: boolean
+                  example: true
+      responses:
+        "204":
+          description: "Успешное добавление или удаление предложения из избранного. Массив с предложениями."
+        "400": 
+            description: "Неверный формат параметров."
+        "404":
+            description: "Текущего пользователя не существует."
+
+  /users/{userId}/favorites/{offerId}:
+    post: 
+      tags: 
+        - users
+      summary: Добавление или удаление избранных предложений
+      description: Добавляет или удаляет избранное предложение у пользователя.
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+        - in: path
+          name: offerId
+          required: true
+          schema:
+            type: string
+            example: 6329c3d6a04ab1061c6425ea
+      requestBody:
+        description: Информация обновления избранных предложений.
+        content:
+          application/json:
+            schema:
+              type: object
+
+              properties:
+                isFavorite:
+                  type: boolean
+                  example: true
+      responses:
+        "204":
+          description: "Успешное добавление или удаление предложения из избранного. Массив с предложениями."
+        "400": 
+            description: "Неверный формат параметров."
+        "404":
+            description: "Текущего пользователя не существует. Текущего предложения не существует."
+
+components:
+  schemas:
+    createOffer:
+      type: object
+
+      properties:
+        title: 
+          type: string
+          example: Cologne Country Lodge
+
+        description:
+          type: string
+          example: The four-star Pullman Paris Tour Eiffel Hotel is located next to the Eiffel Tower on Trocadero Square.
+        
+        datePublication:
+          type: string
+          format: date-time
+          example: 2024-09-25T20:16:56.034Z
+
+        city: 
+          type: string
+          enum:
+            - "Paris"
+            - "Cologne"
+            - "Brussels"
+            - "Amsterdam"
+            - "Hamburg"
+            - "Dusseldorf"
+          example: Amsterdam
+
+        previewImg:
+          type: string
+          example: preview3.jpg
+
+        images:
+          type: array
+          items:
+            type: string
+            example: photo5.jpg
+
+        isPremium:
+          type: boolean
+          example: true
+
+        rating:
+          type: number
+          example: 4.4
+
+        type:
+          type: string
+          enum:
+            - "apartment"
+            - "house"
+            - "room"
+            - "hotel"
+          example: apartment
+
+        flatCount:
+          type: integer
+          minimum: 1
+          maximum: 8
+          example: 4
+
+        guestCount:
+          type: integer
+          minimum: 1
+          maximum: 10
+          example: 3
+
+        cost:
+          type: integer
+          minimum: 100
+          maximum: 100000
+          example: 2000
+
+        conveniences:
+          type: array
+          items:
+            type: string
+            enum:
+              - "Breakfast"
+              - "Air conditioning"
+              - "Laptop friendly workspace"
+              - "Baby seat"
+              - "Washer"
+              - "Towels"
+              - "Fridge"
+            example: Towels
+        
+        author: 
+          type: string
+          format: uuid
+
+        commentCount:
+          type: number
+          example: 5
+
+        coordinates: 
+          type: object
+          properties:
+            latitude: 
+              type: number
+              format: double
+              example: 51.225402
+            longitude:
+              type: number
+              format: double
+              example: 6.776314
+
+    publicOffer:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        title: 
+          type: string
+          example: Cologne Country Lodge
+
+        city: 
+          type: string
+          enum:
+            - "Paris"
+            - "Cologne"
+            - "Brussels"
+            - "Amsterdam"
+            - "Hamburg"
+            - "Dusseldorf"
+          example: Amsterdam
+
+        datePublication:
+          type: string
+          format: date-time
+          example: 2024-09-25T20:16:56.034Z
+
+        previewImg:
+          type: string
+          example: preview3.jpg
+
+        isPremium:
+          type: boolean
+          example: true
+  
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+          example: 4.4
+
+        type:
+          type: string
+          enum:
+            - "apartment"
+            - "house"
+            - "room"
+            - "hotel"
+          example: apartment
+
+        cost:
+          type: integer
+          minimum: 100
+          maximum: 100000
+          example: 2000
+
+        commentCount:
+          type: number
+          example: 5
+
+    offer:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        title: 
+          type: string
+          example: Cologne Country Lodge
+
+        description:
+          type: string
+          example: The four-star Pullman Paris Tour Eiffel Hotel is located next to the Eiffel Tower on Trocadero Square.
+          
+        datePublication:
+          type: string
+          format: date-time
+          example: 2024-09-25T20:16:56.034Z
+
+        city: 
+          type: string
+          enum:
+            - "Paris"
+            - "Cologne"
+            - "Brussels"
+            - "Amsterdam"
+            - "Hamburg"
+            - "Dusseldorf"
+          example: Amsterdam
+
+        previewImg:
+          type: string
+          example: preview3.jpg
+
+        images:
+          type: array
+          items:
+            type: string
+            example: photo5.jpg
+
+        isPremium:
+          type: boolean
+          example: true
+
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+          example: 4.4
+
+        type:
+          type: string
+          enum:
+            - "apartment"
+            - "house"
+            - "room"
+            - "hotel"
+          example: apartment
+
+        flatCount:
+          type: integer
+          minimum: 1
+          maximum: 8
+          example: 4
+
+        guestCount:
+          type: integer
+          minimum: 1
+          maximum: 10
+          example: 3
+
+        cost:
+          type: integer
+          minimum: 100
+          maximum: 100000
+          example: 2000
+
+        conveniences:
+          type: array
+          items:
+            type: string
+            enum:
+              - "Breakfast"
+              - "Air conditioning"
+              - "Laptop friendly workspace"
+              - "Baby seat"
+              - "Washer"
+              - "Towels"
+              - "Fridge"
+            example: Towels
+          
+        author: 
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        commentCount:
+          type: number
+          example: 5
+
+        coordinates: 
+          type: object
+          properties:
+            latitude: 
+              type: number
+              format: double
+              example: 51.225402
+            longitude:
+              type: number
+              format: double
+              example: 6.776314
+
+    createComment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          minimum: 5
+          maximum: 1024
+          example: Text
+
+        datePublication:
+          type: string
+          format: date-time
+          example: 2024-09-25T20:16:56.034Z
+
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+          example: 4.4
+
+        author: 
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+      
+    
+    comment:
+      type: object
+
+      properties:
+        id: 
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+        
+        text:
+          type: string
+          minimum: 5
+          maximum: 1024
+          example: Text
+
+        datePublication:
+          type: string
+          format: date-time
+          example: 2024-09-25T20:16:56.034Z
+
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+          example: 4.4
+
+        author: 
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+    createUser:
+      type: object
+
+      properties:
+        username:
+          type: string
+          minimum: 1
+          maximum: 15
+          example: Ilya
+
+        email:
+          type: string
+          format: email
+          example: ilkolmakov@mail.ru
+
+        avatarPath:
+          type: string
+          example: avatar.png
+
+        password:
+          type: string
+          format: password
+          example: 123456
+
+        type: 
+          type: string 
+          enum:
+            - "обычный"
+            - "pro"
+          example: "обычный" 
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        username:
+          type: string
+          minimum: 1
+          maximum: 15
+          example: Ilya
+
+        email:
+          type: string
+          format: email
+          example: ilkolmakov@mail.ru
+
+        avatarPath:
+          type: string
+          example: avatar.png
+
+        type: 
+          type: string 
+          enum:
+            - "обычный"
+            - "pro"
+          example: "обычный" 
