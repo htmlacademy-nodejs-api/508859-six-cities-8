@@ -97,13 +97,13 @@ npm run mock:server
 ### --generate: 
 
 ```bash
-npm run ts ./src/main.cli.ts -- --generate 100 ./mocks/test-data.tsv http://localhost:3123/api
+npm run ts ./src/main.cli.ts -- --generate 100 ./src/mocks/test-data.tsv http://localhost:3123/api
 ```
 
 ### --import
 
 ```bash
-npm run ts ./src/main.cli.ts -- --import ./src/mocks/test-data.tsv admin test localhost six-sities secret
+npm run ts ./src/main.cli.ts -- --import ./src/mocks/test-data.tsv admin test localhost six-cities secret
 ```
 
 ```bash

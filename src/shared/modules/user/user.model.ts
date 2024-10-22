@@ -19,12 +19,18 @@ const userSchema = new Schema({
     required: true,
     minlength: [5, 'Min length for avatar path is 5'],
   },
-  firstName: {
+  userName: {
     type: String,
     required: true,
-    minlength: [2, 'Min length for firstname is 2']
+    minlength: [1, 'Min length for userName is 1'],
+    maxlength: [15, 'Max length for userName is 15'],
   },
-  lastName: String,
+  // firstName: {
+  //   type: String,
+  //   required: true,
+  //   minlength: [2, 'Min length for firstname is 2']
+  // },
+  // lastName: String,
   type: {
     enum: UserType,
     required: true,

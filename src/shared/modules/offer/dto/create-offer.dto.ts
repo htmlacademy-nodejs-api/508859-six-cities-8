@@ -3,7 +3,6 @@ import { City, ConvenienceType, Coordinate, OfferType } from '../../../types/ind
 export class CreateOfferDto {
   public title!: string;
   public description!: string;
-  public publicationDate!: Date;
   public city!: City;
   public previewImg!: string;
   public images!: string[];
@@ -14,7 +13,5 @@ export class CreateOfferDto {
   public guestCount!: number;
   public cost!: number;
   public conveniences!: ConvenienceType[];
-  public author!: string;
-  public commentCount!: number;
   public coordinate!: Coordinate;
 }
