@@ -16,11 +16,11 @@ export interface UserEntity extends defaultClasses.Base {}
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class UserEntity extends defaultClasses.TimeStamps implements User {
 
-// @prop({ required: true })
-//   public firstName!: string;
+  // @prop({ required: true })
+  //   public firstName!: string;
 
-// @prop({ required: true })
-// public lastName!: string;
+  // @prop({ required: true })
+  // public lastName!: string;
 
 @prop({ required: true })
   public userName!: string;
@@ -41,7 +41,7 @@ public type!: UserType;
   ref: () => OfferEntity,
   default: [],
 })
-public favorites?: Ref<OfferEntity>[] 
+public favorites?: Ref<OfferEntity>[];
 
 constructor(userData: User) {
   super();

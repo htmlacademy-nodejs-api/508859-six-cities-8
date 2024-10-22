@@ -30,46 +30,46 @@ import { DEFAULT_COMMENT_COUNT } from '../comment/comment.constant.js';
 // ];
 
 export const populateAuthor = {
-    $lookup: {
-        from: 'users',
-        localField: 'userId',
-        foreignField: '_id',
-        as: 'author',
-    }
-}
+  $lookup: {
+    from: 'users',
+    localField: 'userId',
+    foreignField: '_id',
+    as: 'author',
+  }
+};
 
 export const commentCountAggregation = [{
+  $lookup: {
+    from: 'comments',
+    let: { offerId: '$_id'},
+    pipeline: [
+      // $eq - равно
+      { $match: { $expr: { $eq: ['$offerId', '$$offerId'] } } },
+      { $project: { _id: 1}}
+    ],
+    as: 'comments'
+  },
+},
+{ id: { $toString: '$_id'}, commentCount: { $size: '$comments' } },
+{ $unset: 'comments' }
+];
+
+export const populateComments = [
+  {
     $lookup: {
       from: 'comments',
       let: { offerId: '$_id'},
       pipeline: [
-        // $eq - равно
         { $match: { $expr: { $eq: ['$offerId', '$$offerId'] } } },
-        { $project: { _id: 1}}
+        { $project: { _id: 1, text: 1, rating: 1, createdAt: 1 }}
       ],
       as: 'comments'
     },
   },
-  { id: { $toString: '$_id'}, commentCount: { $size: '$comments' } },
-  { $unset: 'comments' }
-]
-
-export const populateComments = [
-    {
-        $lookup: {
-            from: 'comments',
-            let: { offerId: '$_id'},
-            pipeline: [
-              { $match: { $expr: { $eq: ['$offerId', '$$offerId'] } } },
-              { $project: { _id: 1, text: 1, rating: 1, createdAt: 1 }}
-            ],
-            as: 'comments'
-          },
-    },
-    {
-        $limit: DEFAULT_COMMENT_COUNT
-    },
-    {
-        $sort: { createdAt: SortType.DOWN }
-    }
+  {
+    $limit: DEFAULT_COMMENT_COUNT
+  },
+  {
+    $sort: { createdAt: SortType.DOWN }
+  }
 ];

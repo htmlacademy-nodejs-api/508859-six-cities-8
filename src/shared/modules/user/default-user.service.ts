@@ -56,7 +56,7 @@ export class DefaultUserService implements UserService {
   //   // 1. Найти пользователя
   //   // 2. Найти у него массив избранных предложений
   //   // 3. Распарсить массив значений в список офферов
-  //   return this.userModel.findById(userId); 
+  //   return this.userModel.findById(userId);
   // offerService findMany id
   // }
 

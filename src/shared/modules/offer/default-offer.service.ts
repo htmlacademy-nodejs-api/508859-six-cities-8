@@ -60,7 +60,7 @@ export class DefaultOfferService implements OfferService {
 
   // TODO: Добавить и рассчитать динамически флаг избранного предложения
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel.findById(offerId).populate(["author"]).exec();
+    return this.offerModel.findById(offerId).populate(['author']).exec();
   }
 
 
