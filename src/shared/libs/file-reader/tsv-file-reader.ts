@@ -68,11 +68,12 @@ export class TSVFileReader extends EventEmitter implements FileReader {
     };
   }
 
-  private parseUser(fullName: string): User {
-    const [firstName, lastName] = fullName.split(' ');
+  private parseUser(userName: string): User {
+    // const [firstName, lastName] = fullName.split(' ');
     return {
-      firstName: firstName || '',
-      lastName: lastName || '',
+      // firstName: firstName || '',
+      // lastName: lastName || '',
+      userName,
       email: '',
       avatarPath: '',
       password: '',

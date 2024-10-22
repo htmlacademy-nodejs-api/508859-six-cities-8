@@ -73,7 +73,7 @@ export class ImportCommand implements Command {
       cost: offer.cost,
       conveniences: offer.conveniences,
       author: user.id, // userId
-      commentCount: offer.commentCount,
+      commentCount: offer.commentCount || 0,
       coordinate: offer.coordinate,
     });
 

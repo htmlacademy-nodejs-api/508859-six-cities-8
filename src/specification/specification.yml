@@ -34,7 +34,6 @@ paths:
           content:
             application/json:
               schema:
-                # offers:
                 type: array
                 items:
                   $ref: '#/components/schemas/publicOffer'
@@ -65,8 +64,8 @@ paths:
         "400":
           description: Неверные параметры для создания предложения.
         
-        "403":
-          description: Нет доступа на создание предложения.
+        "401":
+          description: Пользователь не авторизован для выполнения данного действия.
 
       
 
@@ -92,7 +91,7 @@ paths:
 
         "404":
           description: Не существует предложение.
-    put:
+    patch:
       tags:
         - offers
       summary: Редактирование предложения
@@ -121,6 +120,9 @@ paths:
 
         "400":
           description: Неверные параметры при редактировании предложения.
+
+        "401":
+          description: Пользователь не авторизован для выполнения данного действия.
           
         "403":
           description: Нет доступа при редактировании предложения.
@@ -151,6 +153,9 @@ paths:
                     id:
                       type: string
                       example: 6329c3d6a04ab1061c6425ea
+
+        "401":
+          description: Пользователь не авторизован для выполнения данного действия.
       
         "403":
           description: Нет доступа для удаления предложения.
@@ -248,7 +253,6 @@ paths:
           content:
             application/json:
               schema:
-                # offers:
                 type: array
                 items:
                   $ref: '#/components/schemas/publicOffer'
@@ -278,6 +282,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/user'
+        
+        "400":
+          description: Неверные параметры у запроса.
 
         "409":
           description: Пользователь с таким email уже существует.
@@ -336,19 +343,6 @@ paths:
         "401":
           description: Пользователь не зашел в систему.
 
-  /users/logout:
-    get:
-      tags: 
-        - users
-      summary: Выход из закрытой части приложения
-      description: Разлогин из закрытой части приложения.
-      responses:
-        "204":
-          description: Пользователь успешно вышел из системы.
-
-        "401":
-          description: Пользователь не зашел в систему.
-
   /users/{userId}/favorites:
     get:
       tags: 
@@ -378,8 +372,8 @@ paths:
     post: 
       tags: 
         - users
-      summary: Добавление или удаление избранных предложений
-      description: Добавляет или удаляет избранное предложение у пользователя.
+      summary: Добавление избранных предложений
+      description: Добавляет избранное предложение пользователю.
       parameters:
         - in: path
           name: userId
@@ -395,54 +389,57 @@ paths:
               type: object
 
               properties:
-                isFavorite:
-                  type: boolean
-                  example: true
+                id:
+                  type: string
+                  example: 6329c3d6a04ab1061c6425ea
       responses:
         "204":
-          description: "Успешное добавление или удаление предложения из избранного. Массив с предложениями."
+          description: "Успешное добавление в избранное."
         "400": 
             description: "Неверный формат параметров."
         "404":
             description: "Текущего пользователя не существует."
-
+    
   /users/{userId}/favorites/{offerId}:
-    post: 
+    delete:
       tags: 
         - users
-      summary: Добавление или удаление избранных предложений
-      description: Добавляет или удаляет избранное предложение у пользователя.
+      summary: Удаление избранных предложений
+      description: Удаляет избранное предложение у пользователя.
       parameters:
         - in: path
           name: userId
           required: true
           schema:
             type: string
-            example: 6329c3d6a04ab1061c6425ea
         - in: path
           name: offerId
           required: true
           schema:
             type: string
-            example: 6329c3d6a04ab1061c6425ea
-      requestBody:
-        description: Информация обновления избранных предложений.
-        content:
-          application/json:
-            schema:
-              type: object
-
-              properties:
-                isFavorite:
-                  type: boolean
-                  example: true
       responses:
-        "204":
-          description: "Успешное добавление или удаление предложения из избранного. Массив с предложениями."
-        "400": 
-            description: "Неверный формат параметров."
+        "200":
+          description: Избранное предложение удалено. Идентификатор предложения.
+          content:
+            application/json:
+              schema:
+                  type: object
+
+                  properties:
+                    id:
+                      type: string
+                      example: 6329c3d6a04ab1061c6425ea
+
+        "401":
+          description: Пользователь не авторизован для выполнения данного действия.
+      
+        "403":
+          description: Нет доступа для удаления предложения из избранного.
+
         "404":
-            description: "Текущего пользователя не существует. Текущего предложения не существует."
+          description: Не существует предложения для удаления.
+  
+
 
 components:
   schemas:
