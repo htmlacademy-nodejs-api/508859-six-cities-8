@@ -29,14 +29,27 @@ import { DEFAULT_COMMENT_COUNT } from '../comment/comment.constant.js';
 //     }
 // ];
 
-export const populateAuthor = {
+// INFO: Получение автора из коллекции пользователей
+export const authorAggregation = [{
   $lookup: {
     from: 'users',
-    localField: 'userId',
+    localField: 'author',
     foreignField: '_id',
     as: 'author',
-  }
-};
+  },
+}]; // , { $unwind: '$author' }
+
+// export const populateAuthor = [
+//   {
+//     $lookup: {
+//       from: 'users',
+//       localField: 'authorId',
+//       foreignField: '_id',
+//       as: 'author',
+//     },
+//   },
+//   { $unwind: '$author' },
+// ];
 
 export const commentCountAggregation = [{
   $lookup: {

@@ -1,0 +1,53 @@
+# Предложения
+## Получить список предложений
+GET http://localhost:6000/offers HTTP/1.1
+Content-Type: application/json
+
+###
+
+## Добавить новое предложение
+POST http://localhost:6000/offers HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "Pullman Paris Tour Eiffel",
+    "description": "The four-star Pullman Paris Tour Eiffel Hotel is located next to the Eiffel Tower on Trocadero Square.",
+    "city": "Paris",
+    "previewImg": "preview2.jpg",
+    "images": ["photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg", "photo6.jpg"],
+    "type": "Hotel",
+    "flatCount": 2,
+    "guestCount": 4,
+    "cost": 4000,
+    "conveniences": ["Washer", "Towels", "Fridge"],
+    "author": "67152f430ace5d6726f44745",
+    "coordinate": {
+        "latitude": 52.370216,
+        "longitude": 4.895168
+    }
+}
+
+
+###
+
+## Детальный просмотр предложения
+GET http://localhost:6000/offers/67152f430ace5d6726f44747 HTTP/1.1
+Content-Type: application/json
+
+###
+
+## Редактирование предложения
+PATCH http://localhost:6000/offers/67152f430ace5d6726f44747 HTTP/1.1
+Content-Type: application/json
+
+{
+  "title": "Cologne Country Lodge"
+}
+
+###
+
+## Удаление предложения
+DELETE http://localhost:6000/offers/67152f430ace5d6726f44771 HTTP/1.1
+Content-Type: application/json
+
+###

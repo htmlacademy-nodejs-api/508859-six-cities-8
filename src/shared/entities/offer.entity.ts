@@ -5,9 +5,12 @@ import {
   prop,
   Ref
 } from '@typegoose/typegoose';
+import { City, ConvenienceType, Coordinate, OfferType } from '../types/index.js';
+import { UserEntity } from './user.entity.js';
 
-import { City, ConvenienceType, Coordinate, OfferType } from '../../types/index.js';
-import { UserEntity } from '../user/index.js';
+// import { UserEntity } from '../user/index.js';
+
+// import { City, ConvenienceType, Coordinate, OfferType } from '../../types/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface OfferEntity extends defaultClasses.Base {}
@@ -21,13 +24,13 @@ export interface OfferEntity extends defaultClasses.Base {}
   // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class OfferEntity extends defaultClasses.TimeStamps {
     @prop({ trim: true, required: true })
-  public title!: string;
+    public title!: string;
 
     @prop({ trim: true, required: true })
     public description!: string;
 
-    @prop({ required: true })
-    public publicationDate!: Date;
+    // @prop()
+    // public publicationDate!: Date;
 
     @prop({ type: () => String, enum: City, required: true })
     public city!: City;
@@ -38,10 +41,10 @@ export class OfferEntity extends defaultClasses.TimeStamps {
     @prop({ type: () => [String], required: true })
     public images!: string[];
 
-    @prop({ required: true })
+    @prop() // { required: true }
     public isPremium!: boolean;
 
-    @prop({ required: true })
+    @prop() // { required: true }
     public rating!: number;
 
     @prop({

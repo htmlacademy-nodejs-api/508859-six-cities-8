@@ -6,12 +6,16 @@ export class CreateOfferDto {
   public city!: City;
   public previewImg!: string;
   public images!: string[];
-  public isPremium!: boolean;
-  public rating!: number;
+  // public isPremium!: boolean;
+  // public rating!: number;
   public type!: OfferType;
   public flatCount!: number;
   public guestCount!: number;
   public cost!: number;
   public conveniences!: ConvenienceType[];
   public coordinate!: Coordinate;
+
+  public author?: string;
+  public publicationDate?: Date;
+  public commentCount?: number;
 }
