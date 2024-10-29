@@ -1,0 +1,26 @@
+# Пользователи
+## Создать нового пользователя
+
+POST http://localhost:6000/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "ilkolmakov@yandex.ru",
+  "avatarPath": "torrance.png",
+  "userName": "IlyaK",
+  "password": "test"
+}
+
+###
+
+## Авторизовать пользователя
+
+POST http://localhost:6000/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "ilkolmakov@yandex.ru",
+  "password": "qw12345678"
+}
+
+###

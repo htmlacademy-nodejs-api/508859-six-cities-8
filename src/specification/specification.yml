@@ -367,6 +367,8 @@ paths:
                   $ref: '#/components/schemas/publicOffer'
         "400": 
             description: "Неверный формат параметров."
+        "401": 
+          description: "Пользователь не вошел в систему."
         "404":
             description: "Текущего пользователя не существует."
     post: 

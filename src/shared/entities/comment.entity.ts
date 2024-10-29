@@ -5,9 +5,7 @@ import {
   prop,
   Ref
 } from '@typegoose/typegoose';
-
-import { OfferEntity } from '../offer/index.js';
-import { UserEntity } from '../user/index.js';
+import { OfferEntity, UserEntity } from './index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface CommentEntity extends defaultClasses.Base {}
@@ -27,13 +25,13 @@ export class CommentEntity extends defaultClasses.TimeStamps {
     public rating!: number;
 
     @prop({
-      ref: OfferEntity,
+      ref: () => OfferEntity,
       required: true
     })
     public offerId!: Ref<OfferEntity>;
 
     @prop({
-      ref: UserEntity,
+      ref: () => UserEntity,
       required: true,
     })
     public author!: Ref<UserEntity>;

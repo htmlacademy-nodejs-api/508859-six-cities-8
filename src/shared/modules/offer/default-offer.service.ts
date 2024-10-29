@@ -3,12 +3,15 @@ import { DocumentType, types } from '@typegoose/typegoose';
 
 import { OfferService } from './offer-service.interface.js';
 import { Logger } from '../../libs/logger/index.js';
-import { OfferEntity } from './offer.entity.js';
+// import { OfferEntity } from './offer.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { COMPONENT } from '../../constants/component.constant.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
-import { DEFAULT_OFFER_COUNT, DEFAULT_PREMIUM_OFFER_COUNT } from './offer.constant.js';
+import { DEFAULT_PREMIUM_OFFER_COUNT } from './offer.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
+import { OfferEntity } from '../../entities/index.js';
+import { Types } from 'mongoose';
+import { authorAggregation } from './offer.aggregation.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -21,16 +24,19 @@ export class DefaultOfferService implements OfferService {
   // TODO: Клиент может запросить больше указав нужное количество - SUCCESS
   // TODO: Отсортированный список по дате публикации - SUCCESS
   // TODO: Добавить и рассчитать динамически флаг избранного предложения
-  public async find(count?: number): Promise<DocumentType<OfferEntity>[]> {
-    const limit = count ?? DEFAULT_OFFER_COUNT;
+  public async find(limit: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-      .find({}, {}, { limit })
-      // .limit(limit)
+      .aggregate([
+        ...authorAggregation,
+        { $limit: limit },
+      ])
+      // .find({}, {}, { limit })
+      // // .limit(limit)
 
-      // expose декоратор rename
-      .sort({ publicationDate: SortType.DOWN })
-      // .aggregate(offerAggregation)
-      .populate(['author'])
+      // // expose декоратор rename
+      // .sort({ publicationDate: SortType.DOWN })
+      // // .aggregate(offerAggregation)
+      // .populate(['author'])
       .exec();
   }
 
@@ -60,12 +66,18 @@ export class DefaultOfferService implements OfferService {
 
   // TODO: Добавить и рассчитать динамически флаг избранного предложения
   public async findById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    return this.offerModel.findById(offerId).populate(['author']).exec();
+    const data = await this.offerModel.aggregate([
+      { $match: { '_id': new Types.ObjectId(offerId) } },
+      ...authorAggregation
+    ])
+      .exec();
+
+    return data[0] || null;
+    // .findById(offerId) // { $match: { '_id': new Types.ObjectId(offerId) } }
+
+    // .populate(['author'])
   }
 
-
-  // short offer rdo
-  // full offer rdo
   public async findByPremium(): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .find({ isPremium: true }, {}, { limit: DEFAULT_PREMIUM_OFFER_COUNT })
