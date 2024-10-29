@@ -16,7 +16,7 @@ export class FullOfferRdo {
   // TODO: мапить createdAt на поле publicationDate (переименовывать его в рамках rdo)
   @Expose({ name: 'createdAt' })
   public publicationDate!: string;
-  
+
   @Expose()
   public city!: City;
 

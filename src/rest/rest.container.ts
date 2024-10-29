@@ -16,6 +16,6 @@ export function createRestApplicationContainer() {
   restApplicationContainer.bind<Config<IRestSchema>>(COMPONENT.CONFIG).to(RestConfig).inSingletonScope();
   restApplicationContainer.bind<DatabaseClient>(COMPONENT.DATABASE_CLIENT).to(MongoDatabaseClient).inSingletonScope();
   restApplicationContainer.bind<ExceptionFilter>(COMPONENT.EXCEPTION_FILTER).to(AppExceptionFilter).inSingletonScope();
-  
+
   return restApplicationContainer;
 }

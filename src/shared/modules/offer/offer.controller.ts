@@ -41,7 +41,7 @@ export class OfferController extends BaseController {
     if (!Number.isSafeInteger(limit)) {
       throw new HttpError(
         StatusCodes.BAD_REQUEST,
-        `Limit param is not correct.`,
+        'Limit param is not correct.',
         'OfferController'
       );
     }
@@ -92,7 +92,7 @@ export class OfferController extends BaseController {
         `Offer with id «${id}» not exists.`,
         'OfferController'
       );
-    } 
+    }
 
     const currentOffer = await this.offerService.findById(id);
 
@@ -101,7 +101,7 @@ export class OfferController extends BaseController {
   }
 
   public async update(
-    req: Request<Record<string, unknown>, Record<string, unknown>, UpdateOfferDto>, 
+    req: Request<Record<string, unknown>, Record<string, unknown>, UpdateOfferDto>,
     res: Response
   ): Promise<void> {
     const id = String(req.params.id);

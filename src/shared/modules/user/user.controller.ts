@@ -21,7 +21,7 @@ export class UserController extends BaseController {
   ) {
     super(logger);
     this.logger.info('Register routes for UserController…');
-    
+
     this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.create });
     this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
     this.addRoute({ path: '/login', method: HttpMethod.Get, handler: this.showStatus });
@@ -29,13 +29,13 @@ export class UserController extends BaseController {
     this.addRoute({ path: '/:userId/favorites', method: HttpMethod.Post, handler: this.addFavoriteForUser });
     this.addRoute({ path: '/:userId/favorites', method: HttpMethod.Delete, handler: this.deleteFavoriteForUser });
   }
-  
+
   // -? как идет проверка на статус, вошел ли пользователь в систему
   public async showStatus(): Promise<void> {
     throw new HttpError(
-        StatusCodes.NOT_IMPLEMENTED,
-        'Not implemented',
-        'UserController',
+      StatusCodes.NOT_IMPLEMENTED,
+      'Not implemented',
+      'UserController',
     );
   }
 
@@ -84,17 +84,17 @@ export class UserController extends BaseController {
     const existsUser = await this.userService.findById(String(userId));
 
     if (!existsUser) {
-        throw new HttpError(
-            StatusCodes.NOT_FOUND,
-            `User with id ${userId} not found.`,
-            'UserController',
-        );
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `User with id ${userId} not found.`,
+        'UserController',
+      );
     }
 
     const user = await this.userService.findFavoritesForUser(String(userId));
     this.ok(res, fillDTO(UserRdo, user));
   }
- 
+
 
   // TODO: Можно написать DTO для params
   public async addFavoriteForUser(req: Request, res: Response) {
@@ -102,21 +102,21 @@ export class UserController extends BaseController {
     const { offerId } = req.body;
 
     if (!offerId) {
-        throw new HttpError(
-            StatusCodes.BAD_REQUEST,
-            `OfferId is required field`,
-            'UserController',
-        );
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'OfferId is required field',
+        'UserController',
+      );
     }
 
     const existsUser = await this.userService.findById(String(userId));
 
     if (!existsUser) {
-        throw new HttpError(
-            StatusCodes.NOT_FOUND,
-            `User with id ${userId} not found.`,
-            'UserController',
-        );
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `User with id ${userId} not found.`,
+        'UserController',
+      );
     }
 
     const updatedUser = await this.userService.addFavorite(String(userId), offerId);
@@ -128,21 +128,21 @@ export class UserController extends BaseController {
     const { offerId } = req.body;
 
     if (!offerId) {
-        throw new HttpError(
-            StatusCodes.BAD_REQUEST,
-            `OfferId is required field`,
-            'UserController',
-        );
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'OfferId is required field',
+        'UserController',
+      );
     }
 
     const existsUser = await this.userService.findById(String(userId));
 
     if (!existsUser) {
-        throw new HttpError(
-            StatusCodes.NOT_FOUND,
-            `User with id ${userId} not found.`,
-            'UserController',
-        );
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `User with id ${userId} not found.`,
+        'UserController',
+      );
     }
 
     const updatedUser = await this.userService.deleteFavorite(String(userId), offerId);

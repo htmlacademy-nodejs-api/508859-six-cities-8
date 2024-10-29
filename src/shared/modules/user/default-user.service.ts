@@ -39,7 +39,7 @@ export class DefaultUserService implements UserService {
   public async findById(userId: string): Promise<DocumentType<UserEntity> | null> {
     return this.userModel.findById(userId);
   }
-  
+
 
   public async findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
     const existedUser = await this.findByEmail(dto.email);
@@ -79,5 +79,5 @@ export class DefaultUserService implements UserService {
   // TODO: Закрыть от неавторизированных пользователей
   public async deleteFavorite(userId: string, offerId: string): Promise<DocumentType<UserEntity> | null> {
     return this.userModel.findByIdAndUpdate(userId, { $pull: { favorites: offerId } }, { new: true }).exec();
-  } 
+  }
 }

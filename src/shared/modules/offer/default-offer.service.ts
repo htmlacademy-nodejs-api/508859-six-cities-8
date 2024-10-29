@@ -26,10 +26,10 @@ export class DefaultOfferService implements OfferService {
   // TODO: Добавить и рассчитать динамически флаг избранного предложения
   public async find(limit: number): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
-    .aggregate([
-      ...authorAggregation,
-      { $limit: limit },
-    ])
+      .aggregate([
+        ...authorAggregation,
+        { $limit: limit },
+      ])
       // .find({}, {}, { limit })
       // // .limit(limit)
 
@@ -70,12 +70,12 @@ export class DefaultOfferService implements OfferService {
       { $match: { '_id': new Types.ObjectId(offerId) } },
       ...authorAggregation
     ])
-    .exec();
+      .exec();
 
     return data[0] || null;
-      // .findById(offerId) // { $match: { '_id': new Types.ObjectId(offerId) } }
-      
-      // .populate(['author'])
+    // .findById(offerId) // { $match: { '_id': new Types.ObjectId(offerId) } }
+
+    // .populate(['author'])
   }
 
   public async findByPremium(): Promise<DocumentType<OfferEntity>[]> {
