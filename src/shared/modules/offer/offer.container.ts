@@ -4,7 +4,6 @@ import { types } from '@typegoose/typegoose';
 
 import { OfferService } from './offer-service.interface.js';
 import { DefaultOfferService } from './default-offer.service.js';
-// import { OfferEntity, OfferModel } from './offer.entity.js';
 import { COMPONENT } from '../../constants/index.js';
 import { Controller } from '../../libs/rest/index.js';
 import { OfferController } from './offer.controller.js';

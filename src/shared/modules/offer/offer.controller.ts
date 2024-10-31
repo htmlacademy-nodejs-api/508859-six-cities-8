@@ -2,11 +2,11 @@ import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 // import { StatusCodes } from 'http-status-codes';
 
-import { BaseController, HttpError, HttpMethod } from '../../libs/rest/index.js';
+import { BaseController, DocumentExistsMiddleware, HttpError, HttpMethod, RequestQuery, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { COMPONENT } from '../../constants/component.constant.js';
 import { OfferService } from './offer-service.interface.js';
-import { CreateOfferDto } from './dto/create-offer.dto.js';
+// import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { ShortOfferRdo } from './rdo/short-offer.rdo.js';
 import { fillDTO } from '../../helpers/common.js';
 import { FullOfferRdo } from './rdo/full-offer.rdo.js';
@@ -14,26 +14,41 @@ import { StatusCodes } from 'http-status-codes';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
 import { IdOfferRdo } from './rdo/id-offer.rdo.js';
+import { ParamOfferId } from './type/param-offerid.type.js';
+import { CreateOfferRequest } from './type/create-offer-request.type.js';
+import { CommentService } from '../comment/index.js';
+import { CreateOfferDto } from './dto/create-offer.dto.js';
 
 @injectable()
 export class OfferController extends BaseController {
   constructor(
     @inject(COMPONENT.LOGGER) protected readonly logger: Logger,
     @inject(COMPONENT.OFFER_SERVICE) private readonly offerService: OfferService,
+    @inject(COMPONENT.COMMENT_SERVICE) private readonly commentService: CommentService
   ) {
     super(logger);
 
-    this.logger.info('Register routes for OfferController…');
+    this.logger.info('Register routes for OfferController');
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/:id', method: HttpMethod.Get, handler: this.show });
-    this.addRoute({ path: '/:id', method: HttpMethod.Patch, handler: this.update });
-    this.addRoute({ path: '/:id', method: HttpMethod.Delete, handler: this.delete });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)]
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Get,
+      handler: this.show,
+      middlewares: [new ValidateObjectIdMiddleware('offerId'), new ValidateDtoMiddleware(UpdateOfferDto), new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')]
+    });
+    this.addRoute({ path: '/:offerId', method: HttpMethod.Patch, handler: this.update, middlewares: [new ValidateObjectIdMiddleware('offerId'), new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')] });
+    this.addRoute({ path: '/:offerId', method: HttpMethod.Delete, handler: this.delete, middlewares: [new ValidateObjectIdMiddleware('offerId'), new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')] });
   }
 
-  public async index(req: Request, res: Response): Promise<void> {
-    const limit = req.query.limit ? Number(req.query.limit) : DEFAULT_OFFER_COUNT;
+  public async index({ query } : Request<unknown, unknown, unknown, RequestQuery>, res: Response): Promise<void> {
+    const limit = query?.limit ? Number(query.limit) : DEFAULT_OFFER_COUNT;
 
     // TODO: Временно сделать const userId = '<ID>';
     // const userId = req.user.id // AFTER JWT
@@ -53,7 +68,7 @@ export class OfferController extends BaseController {
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDto>,
+    { body }: CreateOfferRequest,
     res: Response
   ): Promise<void> {
 
@@ -79,60 +94,36 @@ export class OfferController extends BaseController {
     // TODO: доработать валидацию на 400-ую ошибку
     // -? получаем ли мы здесь расширинного автора
     const result = await this.offerService.create(body);
-    this.created(res, fillDTO(FullOfferRdo, result));
+    const offer = await this.offerService.findById(result.id);
+    this.created(res, fillDTO(FullOfferRdo, offer));
   }
 
-  public async show(req: Request, res: Response): Promise<void> {
-    const id = String(req.params.id);
-    const isOfferExists = await this.offerService.exists(id);
+  public async show({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    const offerId = String(params?.offerId);
 
-    if (!isOfferExists) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer with id «${id}» not exists.`,
-        'OfferController'
-      );
-    }
-
-    const currentOffer = await this.offerService.findById(id);
+    const currentOffer = await this.offerService.findById(offerId);
 
     const responseData = fillDTO(FullOfferRdo, currentOffer);
     this.ok(res, responseData);
   }
 
   public async update(
-    req: Request<Record<string, unknown>, Record<string, unknown>, UpdateOfferDto>,
+    { body, params }: Request<ParamOfferId, unknown, UpdateOfferDto>,
     res: Response
   ): Promise<void> {
-    const id = String(req.params.id);
-    const isOfferExists = await this.offerService.exists(id);
+    const offerId = String(params?.offerId);
+    const updatedOffer = await this.offerService.updateById(offerId, body);
 
-    if (!isOfferExists) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer with id «${id}» not exists.`,
-        'OfferController'
-      );
-    }
-
-    const currentOffer = await this.offerService.updateById(id, req.body);
-    const responseData = fillDTO(FullOfferRdo, currentOffer);
+    const responseData = fillDTO(FullOfferRdo, updatedOffer);
     this.ok(res, responseData);
   }
 
-  public async delete(req: Request, res: Response): Promise<void> {
-    const id = String(req.params.id);
-    const isOfferExists = await this.offerService.exists(id);
+  public async delete({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    const offerId = String(params?.offerId);
+    const deletedOffer = await this.offerService.deleteById(offerId);
 
-    if (!isOfferExists) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer with id «${id}» not exists.`,
-        'OfferController'
-      );
-    }
+    await this.commentService.deleteByOfferId(offerId);
 
-    const deletedOffer = await this.offerService.deleteById(id);
     const responseData = fillDTO(IdOfferRdo, deletedOffer);
     this.ok(res, responseData);
   }

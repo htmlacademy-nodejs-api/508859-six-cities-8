@@ -12,4 +12,5 @@ export const COMPONENT = {
   OFFER_CONTROLLER: Symbol.for('kOfferController'),
   EXCEPTION_FILTER: Symbol.for('kExceptionFilter'),
   USER_CONTROLLER: Symbol.for('kUserController'),
+  COMMENT_CONTROLLER: Symbol.for('kCommentController'),
 } as const;

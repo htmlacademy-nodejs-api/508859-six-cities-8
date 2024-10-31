@@ -9,16 +9,16 @@ import { Logger } from '../../shared/libs/logger/index.js';
 import { ConsoleLogger } from '../../shared/libs/logger/console.logger.js';
 import { DefaultUserService } from '../../shared/modules/user/default-user.service.js';
 import { OfferModel, UserModel } from '../../shared/entities/index.js';
-
-const DEFAULT_USER_PASSWORD = '123456';
-// TODO: Доставать из .env переменных
-const DEFAULT_DB_PORT = '27017';
+import { IRestSchema } from '../../shared/libs/config/rest.schema.interface.js';
+import { Config, RestConfig } from '../../shared/libs/config/index.js';
+import { DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD } from '../cli.constants.js';
 
 export class ImportCommand implements Command {
 
   private userService!: UserService;
   private offerService!: OfferService;
   private databaseClient!: DatabaseClient;
+  private config!: Config<IRestSchema>;
   private logger!: Logger;
   private salt!: string;
 
@@ -27,6 +27,7 @@ export class ImportCommand implements Command {
     this.onCompleteImport = this.onCompleteImport.bind(this);
 
     this.logger = new ConsoleLogger();
+    this.config = new RestConfig(this.logger);
     this.userService = new DefaultUserService(this.logger, UserModel);
     this.offerService = new DefaultOfferService(this.logger, OfferModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
@@ -48,15 +49,10 @@ export class ImportCommand implements Command {
 
   private async saveOffer(offer: Offer) {
     const user = await this.userService.findOrCreate({
-      ...offer.author, // offer.user
-      email: 'ilkolmakov@yandex.ru',
+      ...offer.author,
+      email: DEFAULT_USER_LOGIN,
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
-
-    // for (const { name } of offer.categories) {
-    //   const existCategory = await this.categoryService.findByCategoryNameOrCreate(name, { name });
-    //   categories.push(existCategory.id);
-    // }
 
     await this.offerService.create({
       title: offer.title,
@@ -64,8 +60,7 @@ export class ImportCommand implements Command {
       city: offer.city,
       previewImg: offer.previewImg,
       images: offer.images,
-      // isPremium: offer.isPremium,
-      // rating: offer.rating,
+      isPremium: offer.isPremium,
       type: offer.type,
       flatCount: offer.flatCount,
       guestCount: offer.guestCount,
@@ -73,17 +68,15 @@ export class ImportCommand implements Command {
       conveniences: offer.conveniences,
       coordinate: offer.coordinate,
 
-      publicationDate: offer.publicationDate,
-      author: user.id, // userId
+      author: user.id,
       commentCount: offer.commentCount || 0,
     });
 
   }
 
   // TODO: В --help команду нужно добавить аргументы, которые передаем
-  public async execute(filename: string, login: string, password: string, host: string, dbname: string): Promise<void> { // salt: string
-    const uri = getMongoURI(login, password, host, DEFAULT_DB_PORT, dbname);
-    // this.salt = salt;
+  public async execute(filename: string, login: string, password: string, host: string, dbname: string): Promise<void> {
+    const uri = getMongoURI(login, password, host, this.config.get('DB_PORT'), dbname);
 
     await this.databaseClient.connect(uri);
 
@@ -100,23 +93,3 @@ export class ImportCommand implements Command {
   }
 }
 
-
-// public async execute(...parameters: string[]): Promise<void> {
-//   const [filename] = parameters;
-
-//   let fileReader;
-//   if (filename) {
-//     fileReader = new TSVFileReader(filename.trim());
-
-//     fileReader.on('line', this.onImportedOffer);
-//     fileReader.on('end', this.onCompleteImport);
-//   }
-
-//   try {
-//     fileReader?.read();
-//   } catch (err) {
-//     console.error(chalk.red(`Can't import data from file: ${filename}`));
-//     console.error(getErrorMessage(err));
-//   }
-// }
-// }

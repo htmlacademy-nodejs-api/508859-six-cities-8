@@ -3,7 +3,7 @@ import { City, OfferType } from '../../../types/index.js';
 
 export class ShortOfferRdo {
   @Expose()
-  public id!: string; // -? указывам ли идентификатор
+  public id!: string;
 
   @Expose()
   public title!: string;
@@ -12,7 +12,7 @@ export class ShortOfferRdo {
   public publicationDate!: Date;
 
   @Expose()
-  public city!: City; // -? строка или тип
+  public city!: City;
 
   @Expose()
   public previewImg!: string;
@@ -24,7 +24,7 @@ export class ShortOfferRdo {
   public rating!: number;
 
   @Expose()
-  public type!: OfferType; // -? строка или тип
+  public type!: OfferType;
 
   @Expose()
   public cost!: number;

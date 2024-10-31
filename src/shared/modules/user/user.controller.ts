@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 
-import { BaseController, HttpError, HttpMethod } from '../../libs/rest/index.js';
+import { BaseController, DocumentExistsMiddleware, HttpError, HttpMethod, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { CreateUserRequest } from './create-user-request.type.js';
 import { COMPONENT } from '../../constants/index.js';
@@ -11,6 +11,8 @@ import { StatusCodes } from 'http-status-codes';
 import { fillDTO } from '../../helpers/index.js';
 import { UserRdo } from './rdo/user.rdo.js';
 import { LoginUserRequest } from './login-user-request.type.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { LoginUserDto } from './dto/login-user.dto.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -20,14 +22,15 @@ export class UserController extends BaseController {
     @inject(COMPONENT.CONFIG) private readonly configService: Config<IRestSchema>,
   ) {
     super(logger);
-    this.logger.info('Register routes for UserController…');
+    this.logger.info('Register routes for UserController');
 
-    this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
+    this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.create, middlewares: [new ValidateDtoMiddleware(CreateUserDto)] });
+    this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login, middlewares: [new ValidateDtoMiddleware(LoginUserDto)] });
     this.addRoute({ path: '/login', method: HttpMethod.Get, handler: this.showStatus });
-    this.addRoute({ path: '/:userId/favorites', method: HttpMethod.Get, handler: this.showUserFavorites });
-    this.addRoute({ path: '/:userId/favorites', method: HttpMethod.Post, handler: this.addFavoriteForUser });
-    this.addRoute({ path: '/:userId/favorites', method: HttpMethod.Delete, handler: this.deleteFavoriteForUser });
+    this.addRoute({ path: '/:userId/favorites', method: HttpMethod.Get, handler: this.showUserFavorites, middlewares: [new ValidateObjectIdMiddleware('userId'), new DocumentExistsMiddleware(this.userService, 'User', 'userId')] });
+    this.addRoute({ path: '/:userId/favorites', method: HttpMethod.Post, handler: this.addFavoriteForUser, middlewares: [new ValidateObjectIdMiddleware('userId'), new DocumentExistsMiddleware(this.userService, 'User', 'userId')] });
+    this.addRoute({ path: '/:userId/favorites', method: HttpMethod.Delete, handler: this.deleteFavoriteForUser, middlewares: [new ValidateObjectIdMiddleware('userId'), new DocumentExistsMiddleware(this.userService, 'User', 'userId'),] });
+
   }
 
   // -? как идет проверка на статус, вошел ли пользователь в систему

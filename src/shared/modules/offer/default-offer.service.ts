@@ -3,15 +3,14 @@ import { DocumentType, types } from '@typegoose/typegoose';
 
 import { OfferService } from './offer-service.interface.js';
 import { Logger } from '../../libs/logger/index.js';
-// import { OfferEntity } from './offer.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { COMPONENT } from '../../constants/component.constant.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { DEFAULT_PREMIUM_OFFER_COUNT } from './offer.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
-import { OfferEntity } from '../../entities/index.js';
 import { Types } from 'mongoose';
 import { authorAggregation } from './offer.aggregation.js';
+import { OfferEntity } from '../../entities/index.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {

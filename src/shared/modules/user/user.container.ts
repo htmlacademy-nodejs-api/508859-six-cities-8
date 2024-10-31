@@ -4,7 +4,6 @@ import { types } from '@typegoose/typegoose';
 import { UserService } from './user-service.interface.js';
 import { DefaultUserService } from './default-user.service.js';
 import { COMPONENT } from '../../constants/component.constant.js';
-// import { UserEntity, UserModel } from './user.entity.js';
 import { Controller } from '../../libs/rest/index.js';
 import { UserController } from './user.controller.js';
 import { UserEntity, UserModel } from '../../entities/index.js';
