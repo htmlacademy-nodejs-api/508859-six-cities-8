@@ -74,7 +74,7 @@ export class RestApplication {
 
     this.logger.info('Try to init server…');
     await this.initServer();
-    // TODO:  Нужно найти как правильно брать протокол
+
     this.logger.info(
       `Server started on http://${this.config.get('DB_HOST')}:${this.config.get('PORT')}`
     );

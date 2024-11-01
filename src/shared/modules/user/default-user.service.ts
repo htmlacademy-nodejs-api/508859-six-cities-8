@@ -69,7 +69,7 @@ export class DefaultUserService implements UserService {
   //   return this.userModel.findById(userId);
   // offerService findMany id
   // }
-
+// TODO: Как с помощью агрегации Монги найти элемент
   public async findFavoritesForUser(userId: string): Promise<DocumentType<UserEntity> | null> {
     return this.userModel.findById(userId);
   }

@@ -32,7 +32,7 @@ export class ShortOfferRdo {
   // TODO: Через агрегацию добавляешь поле isFavorite, через агрегацию проверяешь
   // TODO: есть ли id этого оффера
   @Expose()
-  public isFavorite!: boolean; // -? указываем при получении
+  public isFavorite!: boolean;
 
   @Expose()
   public commentCount!: number;

@@ -81,8 +81,9 @@ export class UserController extends BaseController {
     );
   }
 
-  public async showUserFavorites(req: Request, res: Response) {
-    const { userId } = req.params;
+  public async showUserFavorites(_: Request, res: Response) {
+    // TODO: Токен берется из токена авторизации
+    const userId = "67152f430ace5d6726f44745"
 
     const existsUser = await this.userService.findById(String(userId));
 

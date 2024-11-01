@@ -41,7 +41,7 @@ export class DefaultOfferService implements OfferService {
 
   // TODO: Закрыть от неавторизированных пользователей
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
-    const result = await this.offerModel.create(dto);
+    const result = await this.offerModel.create({...dto, rating: 0 });
     this.logger.info(`New offer created: ${dto.title}`);
 
     return result;

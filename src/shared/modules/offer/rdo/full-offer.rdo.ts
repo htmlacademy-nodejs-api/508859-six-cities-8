@@ -46,7 +46,7 @@ export class FullOfferRdo {
   public conveniences!: ConvenienceType[];
 
   @Expose()
-  public isFavorite!: boolean; // -? указываем при получении
+  public isFavorite!: boolean;
 
   // TODO: данные вытаскивать из токена JWT
   @Expose()
