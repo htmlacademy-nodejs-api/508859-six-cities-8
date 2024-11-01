@@ -12,7 +12,7 @@ import { fillDTO } from '../../helpers/common.js';
 import { FullOfferRdo } from './rdo/full-offer.rdo.js';
 import { StatusCodes } from 'http-status-codes';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
-import { DEFAULT_OFFER_COUNT } from './offer.constant.js';
+import { DEFAULT_OFFER_COUNT, MAX_OFFER_COUNT } from './offer.constant.js';
 import { IdOfferRdo } from './rdo/id-offer.rdo.js';
 import { ParamOfferId } from './type/param-offerid.type.js';
 import { CreateOfferRequest } from './type/create-offer-request.type.js';
@@ -48,7 +48,8 @@ export class OfferController extends BaseController {
   }
 
   public async index({ query } : Request<unknown, unknown, unknown, RequestQuery>, res: Response): Promise<void> {
-    const limit = query?.limit ? Number(query.limit) : DEFAULT_OFFER_COUNT;
+    const limitNum = Number(query?.limit);
+    const limit = query?.limit && !Number.isNaN(limitNum) && limitNum < MAX_OFFER_COUNT ? limitNum : DEFAULT_OFFER_COUNT;
 
     // TODO: Временно сделать const userId = '<ID>';
     // const userId = req.user.id // AFTER JWT

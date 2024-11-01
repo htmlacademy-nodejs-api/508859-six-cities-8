@@ -107,8 +107,7 @@ export class DefaultOfferService implements OfferService {
 
   // TODO: проверка на существование документа - предложения
   public async exists(documentId: string): Promise<boolean> {
-    return (await this.offerModel
-      .exists({_id: documentId})) !== null;
+    return this.offerModel.exists({_id: documentId}).then(r => !!r);
   }
 
 

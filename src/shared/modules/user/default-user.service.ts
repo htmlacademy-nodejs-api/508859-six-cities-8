@@ -30,8 +30,7 @@ export class DefaultUserService implements UserService {
 
   // TODO: проверка на существование документа - предложения
   public async exists(documentId: string): Promise<boolean> {
-    return (await this.userModel
-      .exists({_id: documentId})) !== null;
+    return this.userModel.exists({_id: documentId}).then(r => !!r);
   }
 
   public async findByEmail(email: string): Promise<DocumentType<UserEntity> | null> {
