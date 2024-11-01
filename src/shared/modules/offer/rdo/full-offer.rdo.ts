@@ -4,7 +4,7 @@ import { UserRdo } from '../../user/rdo/user.rdo.js';
 
 export class FullOfferRdo {
   @Expose()
-  public id!: string; // -? мы должны показывать идентификатор
+  public id!: string;
 
   @Expose()
   public title!: string;
@@ -12,8 +12,6 @@ export class FullOfferRdo {
   @Expose()
   public description!: string;
 
-  // TODO: publicationDate - не принимать с фронтенда
-  // TODO: мапить createdAt на поле publicationDate (переименовывать его в рамках rdo)
   @Expose({ name: 'createdAt' })
   public publicationDate!: string;
 
@@ -48,7 +46,7 @@ export class FullOfferRdo {
   public conveniences!: ConvenienceType[];
 
   @Expose()
-  public isFavorite!: boolean; // -? указываем при получении
+  public isFavorite!: boolean;
 
   // TODO: данные вытаскивать из токена JWT
   @Expose()

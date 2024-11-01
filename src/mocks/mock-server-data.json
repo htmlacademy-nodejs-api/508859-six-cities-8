@@ -21,10 +21,10 @@
         "isPremuimArr": [true, false],
         "ratings": [1, 2, 3, 4, 5],
         "types": [
-            "Apartment", 
-            "House", 
-            "Room", 
-            "Hotel"
+            "apartment", 
+            "house", 
+            "room", 
+            "hotel"
         ],
         "flatCounts": [1, 2, 3, 4, 5, 6],
         "guestCounts": [1, 2, 3, 4, 5, 6, 7, 8],

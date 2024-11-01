@@ -1,3 +1,10 @@
-export { UserEntity, UserModel } from './user.entity.js';
-export { OfferEntity, OfferModel } from './offer.entity.js';
-export { CommentEntity, CommentModel } from './comment.entity.js';
+import { getModelForClass } from '@typegoose/typegoose';
+import { OfferEntity } from './offer.entity.js';
+import { UserEntity } from './user.entity.js';
+import { CommentEntity } from './comment.entity.js';
+
+export const OfferModel = getModelForClass(OfferEntity);
+export const UserModel = getModelForClass(UserEntity);
+export const CommentModel = getModelForClass(CommentEntity);
+
+export { OfferEntity, UserEntity, CommentEntity };

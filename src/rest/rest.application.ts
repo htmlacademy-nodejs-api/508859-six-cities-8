@@ -19,6 +19,7 @@ export class RestApplication {
     @inject(COMPONENT.OFFER_CONTROLLER) private readonly offerController: Controller,
     @inject(COMPONENT.EXCEPTION_FILTER) private readonly appExceptionFilter: ExceptionFilter,
     @inject(COMPONENT.USER_CONTROLLER) private readonly userController: Controller,
+    @inject(COMPONENT.COMMENT_CONTROLLER) private readonly commentController: Controller,
   ) {}
 
   private async initDb() {
@@ -41,6 +42,7 @@ export class RestApplication {
   private async initControllers() {
     this.server.use('/offers', this.offerController.router);
     this.server.use('/users', this.userController.router);
+    this.server.use('/comments', this.commentController.router);
   }
 
   private async initMiddleware() {
@@ -72,7 +74,7 @@ export class RestApplication {
 
     this.logger.info('Try to init server…');
     await this.initServer();
-    // TODO:  Нужно найти как правильно брать протокол
+
     this.logger.info(
       `Server started on http://${this.config.get('DB_HOST')}:${this.config.get('PORT')}`
     );

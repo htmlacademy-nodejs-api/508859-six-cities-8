@@ -13,9 +13,6 @@ export class UserRdo {
 
   @Expose()
   public type!: UserType;
-
-  @Expose()
-  public favorites!: string[];
 }
 
 // TODO: Работа с favorites

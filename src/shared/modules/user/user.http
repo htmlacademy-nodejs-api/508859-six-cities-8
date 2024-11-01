@@ -5,10 +5,11 @@ POST http://localhost:6000/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "ilkolmakov@yandex.ru",
+  "email": "ilkolmakov@mail.ru",
   "avatarPath": "torrance.png",
   "userName": "IlyaK",
-  "password": "test"
+  "password": "test123",
+  "type": "pro"
 }
 
 ###

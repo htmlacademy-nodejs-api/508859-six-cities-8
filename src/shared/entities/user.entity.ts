@@ -1,11 +1,7 @@
-import { defaultClasses, getModelForClass, prop, modelOptions } from '@typegoose/typegoose';
+import { defaultClasses, prop, modelOptions, Ref } from '@typegoose/typegoose';
 import { User, UserType } from '../types/index.js';
-// import { OfferEntity } from './offer.entity.js';
 import { createSHA256 } from '../helpers/index.js';
-
-// import { User, UserType } from '../../types/index.js';
-// import { createSHA256 } from '../../helpers/index.js';
-// import { OfferEntity } from '../offer/offer.entity.js';
+import { OfferEntity } from './offer.entity.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface UserEntity extends defaultClasses.Base {}
@@ -18,12 +14,6 @@ export interface UserEntity extends defaultClasses.Base {}
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class UserEntity extends defaultClasses.TimeStamps implements User {
-
-  // @prop({ required: true })
-  //   public firstName!: string;
-
-  // @prop({ required: true })
-  // public lastName!: string;
 
 @prop({ required: true })
   public userName!: string;
@@ -40,18 +30,11 @@ public password!: string;
 @prop({ required: true, enum: UserType })
 public type!: UserType;
 
-// -? Как прокинуть правильно ссылку на OfferEntity
-// @prop({
-//   ref: () => OfferEntity,
-//   default: [],
-// })
-// public favorites?: Ref<OfferEntity>[];
-
 @prop({
-  // ref: () => OfferEntity,
+  ref: () => OfferEntity,
   default: [],
 })
-public favorites?: string[];
+public favorites?: Ref<OfferEntity>[];
 
 constructor(userData: User) {
   super();
@@ -59,8 +42,6 @@ constructor(userData: User) {
   this.email = userData.email;
   this.avatarPath = userData.avatarPath;
   this.userName = userData.userName;
-  // this.firstName = userData.firstName;
-  // this.lastName = userData.lastName;
   this.type = userData.type;
 }
 
@@ -72,6 +53,3 @@ public getPassword() {
   return this.password;
 }
 }
-
-
-export const UserModel = getModelForClass(UserEntity);

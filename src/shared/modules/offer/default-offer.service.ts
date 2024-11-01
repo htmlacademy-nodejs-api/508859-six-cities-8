@@ -3,15 +3,14 @@ import { DocumentType, types } from '@typegoose/typegoose';
 
 import { OfferService } from './offer-service.interface.js';
 import { Logger } from '../../libs/logger/index.js';
-// import { OfferEntity } from './offer.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { COMPONENT } from '../../constants/component.constant.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { DEFAULT_PREMIUM_OFFER_COUNT } from './offer.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
-import { OfferEntity } from '../../entities/index.js';
 import { Types } from 'mongoose';
 import { authorAggregation } from './offer.aggregation.js';
+import { OfferEntity } from '../../entities/index.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
@@ -42,7 +41,7 @@ export class DefaultOfferService implements OfferService {
 
   // TODO: Закрыть от неавторизированных пользователей
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
-    const result = await this.offerModel.create(dto);
+    const result = await this.offerModel.create({...dto, rating: 0 });
     this.logger.info(`New offer created: ${dto.title}`);
 
     return result;
@@ -108,8 +107,7 @@ export class DefaultOfferService implements OfferService {
 
   // TODO: проверка на существование документа - предложения
   public async exists(documentId: string): Promise<boolean> {
-    return (await this.offerModel
-      .exists({_id: documentId})) !== null;
+    return this.offerModel.exists({_id: documentId}).then((r) => !!r);
   }
 
 
