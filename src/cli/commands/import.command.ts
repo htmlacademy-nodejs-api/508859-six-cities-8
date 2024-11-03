@@ -12,11 +12,14 @@ import { OfferModel, UserModel } from '../../shared/entities/index.js';
 import { IRestSchema } from '../../shared/libs/config/rest.schema.interface.js';
 import { Config, RestConfig } from '../../shared/libs/config/index.js';
 import { DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD } from '../cli.constants.js';
+// import { CommentService } from '../../shared/modules/comment/comment-service.interface.js';
+// import { DefaultCommentService } from '../../shared/modules/comment/index.js';
 
 export class ImportCommand implements Command {
 
   private userService!: UserService;
   private offerService!: OfferService;
+  // private commentService!: CommentService;
   private databaseClient!: DatabaseClient;
   private config!: Config<IRestSchema>;
   private logger!: Logger;
@@ -28,7 +31,8 @@ export class ImportCommand implements Command {
 
     this.logger = new ConsoleLogger();
     this.config = new RestConfig(this.logger);
-    this.userService = new DefaultUserService(this.logger, UserModel);
+    // this.commentService = new DefaultCommentService(CommentModel, this.offerService);
+    this.userService = new DefaultUserService(this.logger, UserModel, this.offerService);
     this.offerService = new DefaultOfferService(this.logger, OfferModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
@@ -49,7 +53,7 @@ export class ImportCommand implements Command {
 
   private async saveOffer(offer: Offer) {
     const user = await this.userService.findOrCreate({
-      ...offer.author,
+      ...offer.user,
       email: DEFAULT_USER_LOGIN,
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
@@ -68,8 +72,7 @@ export class ImportCommand implements Command {
       conveniences: offer.conveniences,
       coordinate: offer.coordinate,
 
-      author: user.id,
-      commentCount: offer.commentCount || 0,
+      userId: user.id,
     });
 
   }

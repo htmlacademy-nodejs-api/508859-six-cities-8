@@ -25,11 +25,9 @@ export class TSVOfferGenerator implements OfferGenerator {
     const guestCount = getRandomItem<number>(this.mockData.guestCounts).toString();
     const cost = getRandomItem<number>(this.mockData.costs).toString();
     const conveniences = getRandomItems(this.mockData.conveniences).join(';');
-    const author = getRandomItem(this.mockData.authors);
+    const user = getRandomItem(this.mockData.users);
     const commentCount = getRandomItem<number>(this.mockData.commentCounts).toString();
     const coordinate = getRandomItem<Coordinate>(this.mockData.coordinates);
-
-    // const [firstname, lastname] = author.split(' ');
 
     const currentCoordinate = `${coordinate.latitude};${coordinate.longitude}`;
 
@@ -37,7 +35,7 @@ export class TSVOfferGenerator implements OfferGenerator {
       title, description, publicationDate,
       city, previewImg, images, isPremium, rating,
       type, flatCount, guestCount, cost, conveniences,
-      author, commentCount, currentCoordinate
+      user, commentCount, currentCoordinate
     ].join('\t');
   }
 }

@@ -1,13 +1,10 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
-// import { StatusCodes } from 'http-status-codes';
 
 import { BaseController, DocumentExistsMiddleware, HttpError, HttpMethod, RequestQuery, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { COMPONENT } from '../../constants/component.constant.js';
 import { OfferService } from './offer-service.interface.js';
-// import { CreateOfferDto } from './dto/create-offer.dto.js';
-import { ShortOfferRdo } from './rdo/short-offer.rdo.js';
 import { fillDTO } from '../../helpers/common.js';
 import { FullOfferRdo } from './rdo/full-offer.rdo.js';
 import { StatusCodes } from 'http-status-codes';
@@ -24,7 +21,7 @@ export class OfferController extends BaseController {
   constructor(
     @inject(COMPONENT.LOGGER) protected readonly logger: Logger,
     @inject(COMPONENT.OFFER_SERVICE) private readonly offerService: OfferService,
-    @inject(COMPONENT.COMMENT_SERVICE) private readonly commentService: CommentService
+    @inject(COMPONENT.COMMENT_SERVICE) private readonly commentService: CommentService // TODO: Убрать!
   ) {
     super(logger);
 
@@ -41,13 +38,16 @@ export class OfferController extends BaseController {
       path: '/:offerId',
       method: HttpMethod.Get,
       handler: this.show,
-      middlewares: [new ValidateObjectIdMiddleware('offerId'), new ValidateDtoMiddleware(UpdateOfferDto), new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')]
     });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Patch, handler: this.update, middlewares: [new ValidateObjectIdMiddleware('offerId'), new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')] });
+    this.addRoute({ path: '/:offerId', method: HttpMethod.Patch, handler: this.update, middlewares: [new ValidateObjectIdMiddleware('offerId'), new ValidateDtoMiddleware(UpdateOfferDto), new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')] });
     this.addRoute({ path: '/:offerId', method: HttpMethod.Delete, handler: this.delete, middlewares: [new ValidateObjectIdMiddleware('offerId'), new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')] });
   }
 
   public async index({ query } : Request<unknown, unknown, unknown, RequestQuery>, res: Response): Promise<void> {
+    // TODO: Опционально сделать middleware для limit (опционально)
     const limitNum = Number(query?.limit);
     const limit = query?.limit && !Number.isNaN(limitNum) && limitNum < MAX_OFFER_COUNT ? limitNum : DEFAULT_OFFER_COUNT;
 
@@ -64,7 +64,7 @@ export class OfferController extends BaseController {
 
     const offers = await this.offerService.find(limit);
 
-    const responseData = fillDTO(ShortOfferRdo, offers);
+    const responseData = fillDTO(FullOfferRdo, offers);
     this.ok(res, responseData);
   }
 
@@ -120,9 +120,10 @@ export class OfferController extends BaseController {
   }
 
   public async delete({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    // TODO: Переопределять request (опционально)
     const offerId = String(params?.offerId);
     const deletedOffer = await this.offerService.deleteById(offerId);
-
+    // -? Circular dependency found: Symbol(kRestApplication) --> Symbol(kOfferController) --> Symbol(kOfferService) --> Symbol(kCommentService) --> Symbol(kOfferService)
     await this.commentService.deleteByOfferId(offerId);
 
     const responseData = fillDTO(IdOfferRdo, deletedOffer);

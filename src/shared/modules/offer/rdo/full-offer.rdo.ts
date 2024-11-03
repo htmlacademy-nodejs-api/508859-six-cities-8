@@ -1,9 +1,10 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { City, ConvenienceType, Coordinate, OfferType } from '../../../types/index.js';
 import { UserRdo } from '../../user/rdo/user.rdo.js';
 
 export class FullOfferRdo {
   @Expose()
+  @Transform((params) => params.obj._id.toString())
   public id!: string;
 
   @Expose()
@@ -51,7 +52,7 @@ export class FullOfferRdo {
   // TODO: данные вытаскивать из токена JWT
   @Expose()
   @Type(() => UserRdo)
-  public author!: UserRdo;
+  public user!: UserRdo;
 
   @Expose()
   public commentCount!: number;

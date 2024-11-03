@@ -22,8 +22,8 @@ export class DefaultCommentService implements CommentService {
   public async findByOfferId(offerId: string): Promise<DocumentType<CommentEntity>[]> {
     return this.commentModel
       .find({offerId}, {}, { limit: DEFAULT_COMMENT_COUNT })
-      .sort({ createdAt: SortType.DOWN })
-      .populate('author');
+      .sort({ createdAt: SortType.DESC })
+      .populate('userId');
   }
 
   // TODO: Закрыть от неавторизированных пользователей
@@ -31,8 +31,8 @@ export class DefaultCommentService implements CommentService {
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
     const comment = await this.commentModel.create(dto);
 
-    await this.offerService.calculateOfferRating(String(comment.author));
-    return comment.populate('author');
+    await this.offerService.calculateOfferRating(String(comment.userId));
+    return comment.populate('userId');
   }
 
   // TODO: Ручка удаления комментариев вместе с предложениями

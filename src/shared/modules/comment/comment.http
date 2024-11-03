@@ -7,13 +7,13 @@ Content-Type: application/json
 {
   "text": "Всё отлично",
   "rating": 5,
-  "offerId": "67152f430ace5d6726f44747",
-  "author": "67152f430ace5d6726f44745"
+  "offerId": "6727abe4326ef99e212e42f5",
+  "userId": "67152f430ace5d6726f44745"
 }
 
 ###
 
 ## Список комментариев к объявлению
-GET http://localhost:6000/comments?offerId=67152f430ace5d6726f44747 HTTP/1.1
+GET http://localhost:6000/comments?offerId=6727abe4326ef99e212e42f5 HTTP/1.1
 
 ###

@@ -6,3 +6,5 @@ export const LAST_WEEK_DAY = 7;
 
 export const DECIMAL_RADIX = 10;
 export const ENCODING_DEFAULT = 'utf-8';
+
+export const IMAGE_EXTENSIONS = ['jpg', 'png'];

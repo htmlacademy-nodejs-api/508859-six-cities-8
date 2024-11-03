@@ -1,23 +1,23 @@
 import { IsEmail, IsEnum, IsString, Length } from 'class-validator';
 import { UserType } from '../../../types/index.js';
-import { UPDATE_USER_MESSAGES } from './update-user.messages.js';
+import { USER_DTO_CONSTRAINTS } from '../user.constant.js';
 
 export class UpdateUserDto {
-  @IsEmail({}, { message: UPDATE_USER_MESSAGES.EMAIL.invalidFormat })
+  @IsEmail()
   public email!: string;
 
   // TODO: Указываем дефолтное значение и поле необязательно
-  @IsString({ message: UPDATE_USER_MESSAGES.AVATAR_PATH.invalidFormat })
+  @IsString()
   public avatarPath!: string;
 
-  @IsString({ message: UPDATE_USER_MESSAGES.USERNAME.invalidFormat })
-  @Length(1, 15, { message: UPDATE_USER_MESSAGES.USERNAME.lengthField })
+  @IsString()
+  @Length(USER_DTO_CONSTRAINTS.USERNAME.MIN_LENGTH, USER_DTO_CONSTRAINTS.USERNAME.MAX_LENGTH)
   public userName!: string;
 
-  @IsString({ message: UPDATE_USER_MESSAGES.PASSWORD.invalidFormat })
-  @Length(6, 12, { message: UPDATE_USER_MESSAGES.PASSWORD.lengthField })
+  @IsString()
+  @Length(USER_DTO_CONSTRAINTS.PASSWORD.MIN_LENGTH, USER_DTO_CONSTRAINTS.PASSWORD.MAX_LENGTH)
   public password!: string;
 
-  @IsEnum(UserType, { message: UPDATE_USER_MESSAGES.USER_TYPE.invalid })
+  @IsEnum(UserType)
   public type!: UserType;
 }

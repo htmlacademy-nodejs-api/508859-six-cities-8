@@ -6,4 +6,5 @@ export interface IRestSchema {
     DB_PASSWORD: string;
     DB_PORT: string;
     DB_NAME: string;
+    UPLOAD_DIRECTORY: string;
 }

@@ -17,7 +17,7 @@ export interface MockServerData {
     guestCounts: number[],
     costs: number[],
     conveniences: ConvenienceType[],
-    authors: string[],
+    users: string[],
     commentCounts: number[],
     coordinates: Coordinate[]
 }

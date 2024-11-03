@@ -5,29 +5,29 @@ import { Middleware } from './middleware.interface.js';
 import { DocumentExists } from '../../../types/index.js';
 import { HttpError } from '../errors/index.js';
 
-export class DocumentExistsMiddleware implements Middleware {
+export class DocumentBodyExistsMiddleware implements Middleware {
   constructor(
     private readonly service: DocumentExists,
     private readonly entityName: string,
-    private readonly paramName: string,
+    private readonly objectFieldName: string,
   ) {}
 
-  public async execute({ params }: Request, _: Response, next: NextFunction): Promise<void> {
-    const documentId = params[this.paramName];
+  public async execute({ body }: Request, _: Response, next: NextFunction): Promise<void> {
+    const documentId = body[this.objectFieldName];
 
     if (!documentId) {
       throw new HttpError(
         StatusCodes.BAD_REQUEST,
-        'documentId is not valid.',
-        'DocumentExistsMiddleware'
+        'documentId with body is not valid.',
+        'DocumentBodyExistsMiddleware'
       );
     }
 
-    if (! await this.service.exists(documentId)) {
+    if (! await this.service.exists(String(documentId))) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
-        `${this.entityName} with ${documentId} not found.`,
-        'DocumentExistsMiddleware'
+        `${this.entityName} with ${documentId} with body not found.`,
+        'DocumentBodyExistsMiddleware'
       );
     }
 

@@ -11,12 +11,15 @@ import { SortType } from '../../types/sort-type.enum.js';
 import { Types } from 'mongoose';
 import { authorAggregation } from './offer.aggregation.js';
 import { OfferEntity } from '../../entities/index.js';
+// import { CommentService } from '../comment/index.js';
+// import { UserService } from '../user/user-service.interface.js';
 
 @injectable()
 export class DefaultOfferService implements OfferService {
   constructor(
     @inject(COMPONENT.LOGGER) private readonly logger: Logger,
-    @inject(COMPONENT.OFFER_MODEL) private readonly offerModel: types.ModelType<OfferEntity>
+    @inject(COMPONENT.OFFER_MODEL) private readonly offerModel: types.ModelType<OfferEntity>,
+    // @inject(COMPONENT.COMMENT_SERVICE) private readonly commentService: CommentService
   ) {}
 
   // TODO: Возвращать не больше 60 предложений об аренде - SUCCESS
@@ -28,12 +31,12 @@ export class DefaultOfferService implements OfferService {
       .aggregate([
         ...authorAggregation,
         { $limit: limit },
+        { $sort: { createdAt: SortType.DESC }}
       ])
       // .find({}, {}, { limit })
       // // .limit(limit)
 
       // // expose декоратор rename
-      // .sort({ publicationDate: SortType.DOWN })
       // // .aggregate(offerAggregation)
       // .populate(['author'])
       .exec();
@@ -51,7 +54,7 @@ export class DefaultOfferService implements OfferService {
   public async updateById(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findByIdAndUpdate(offerId, dto, {new: true})
-      .populate(['author'])
+      .populate(['userId'])
       .exec();
   }
 
@@ -77,13 +80,13 @@ export class DefaultOfferService implements OfferService {
     // .populate(['author'])
   }
 
+  // TODO: Проверить метод
   public async findByPremium(): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
       .find({ isPremium: true }, {}, { limit: DEFAULT_PREMIUM_OFFER_COUNT })
-      .sort({ publicationDate: SortType.DOWN });
+      .sort({ publicationDate: SortType.DESC });
   }
 
-  // INFO: икремент добавления количества комментария //  - обратиться к сервису оферов
   public async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findByIdAndUpdate(offerId, {
@@ -105,19 +108,27 @@ export class DefaultOfferService implements OfferService {
     }).exec();
   }
 
-  // TODO: проверка на существование документа - предложения
   public async exists(documentId: string): Promise<boolean> {
     return this.offerModel.exists({_id: documentId}).then((r) => !!r);
   }
 
 
-  // public async findByCategoryId(categoryId: string, count?: number): Promise<DocumentType<OfferEntity>[]> {
-  //   const limit = count ?? DEFAULT_OFFER_COUNT;
-  //   return this.offerModel
-  //     .find({categories: categoryId}, {}, {limit})
-  //     .populate(['userId', 'categories'])
-  //     .exec();
-  // }
+  public async findFavoritesByUserId(userId: string): Promise<DocumentType<OfferEntity>[]> {
+    console.log('userId', userId);
+    return this.offerModel
+      .aggregate([
+        ...authorAggregation,
+      ])
+      .exec();
+  }
+
+  // console.log("user", user);
+
+  // const favoritesIds = user.favorites.map((item: Types.ObjectId) => ({ _id: item }));
+  // const user = await this.userService.findById(userId);
+  // const offers = user.favorites.map(() => await this.);
+  // console.log("user", user);
+  // { $match: { 'author': new Types.ObjectId(userId) } },
 
   // public async findNew(count: number): Promise<DocumentType<OfferEntity>[]> {
   //   return this.offerModel

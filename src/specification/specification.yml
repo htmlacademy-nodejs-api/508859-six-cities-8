@@ -441,6 +441,34 @@ paths:
         "404":
           description: Не существует предложения для удаления.
   
+  /users/{userId}/avatar:
+    post:
+      tags: 
+          - users
+      summary: Загрузка аватара пользователя
+      description: Загружает аватар пользователя в систему.
+      parameters:
+          - in: path
+            name: userId
+            required: true
+            schema:
+              type: string
+      responses:
+        "201":
+          description: Аватар загружен успешно.
+
+        "400":
+          description: Некорректный файл.
+
+        "401":
+          description: Пользователь не авторизован для выполнения данного действия.
+      
+        "403":
+          description: Нет доступа для загрузки аватара.
+
+        "404":
+          description: Пользователя не существует.
+  
 
 
 components:
@@ -532,7 +560,7 @@ components:
               - "Fridge"
             example: Towels
         
-        author: 
+        userId: 
           type: string
           format: uuid
 
@@ -706,7 +734,7 @@ components:
               - "Fridge"
             example: Towels
           
-        author: 
+        userId: 
           type: string
           example: 6329c3d6a04ab1061c6425ea
 
@@ -747,7 +775,7 @@ components:
           maximum: 5
           example: 4.4
 
-        author: 
+        userId: 
           type: string
           example: 6329c3d6a04ab1061c6425ea
       
@@ -777,7 +805,7 @@ components:
           maximum: 5
           example: 4.4
 
-        author: 
+        userId: 
           type: string
           example: 6329c3d6a04ab1061c6425ea
 
