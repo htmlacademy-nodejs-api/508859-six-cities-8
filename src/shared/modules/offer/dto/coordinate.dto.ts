@@ -5,5 +5,5 @@ export class CoordinateDTO {
   public latitude!: number;
 
   @IsLongitude()
-  public longitude!: number;
+ public longitude!: number;
 }

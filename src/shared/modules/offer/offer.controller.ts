@@ -39,7 +39,7 @@ export class OfferController extends BaseController {
       method: HttpMethod.Get,
       handler: this.show,
       middlewares: [
-        new ValidateObjectIdMiddleware('offerId'), 
+        new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')]
     });
     this.addRoute({ path: '/:offerId', method: HttpMethod.Patch, handler: this.update, middlewares: [new ValidateObjectIdMiddleware('offerId'), new ValidateDtoMiddleware(UpdateOfferDto), new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')] });

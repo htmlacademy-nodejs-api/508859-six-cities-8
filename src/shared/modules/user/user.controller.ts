@@ -30,24 +30,24 @@ export class UserController extends BaseController {
     this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login, middlewares: [new ValidateDtoMiddleware(LoginUserDto)] });
     this.addRoute({ path: '/login', method: HttpMethod.Get, handler: this.showStatus });
     this.addRoute({ path: '/favorites', method: HttpMethod.Get, handler: this.showUserFavorites, middlewares: [] });
-    this.addRoute({ 
-      path: '/favorites', 
-      method: HttpMethod.Post, 
-      handler: this.addFavoriteForUser, 
+    this.addRoute({
+      path: '/favorites',
+      method: HttpMethod.Post,
+      handler: this.addFavoriteForUser,
       middlewares: [
-        new ValidateObjectIdBodyMiddleware('offerId'), 
+        new ValidateObjectIdBodyMiddleware('offerId'),
         new DocumentBodyExistsMiddleware(this.offerService, 'Offer', 'offerId')
-      ] 
+      ]
     });
     // -? Нужно спросить необходимость инжектировать сервис для проверки
-    this.addRoute({ 
-      path: '/favorites/:offerId', 
-      method: HttpMethod.Delete, 
-      handler: this.deleteFavoriteForUser, 
+    this.addRoute({
+      path: '/favorites/:offerId',
+      method: HttpMethod.Delete,
+      handler: this.deleteFavoriteForUser,
       middlewares: [
-        new ValidateObjectIdMiddleware('offerId'), 
+        new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
-      ] 
+      ]
     });
     this.addRoute({
       path: '/:userId/avatar',
@@ -57,7 +57,7 @@ export class UserController extends BaseController {
         new ValidateObjectIdMiddleware('userId'),
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatarPath'),
       ]
-    })
+    });
   }
 
   // -? как идет проверка на статус, вошел ли пользователь в систему
@@ -132,7 +132,7 @@ export class UserController extends BaseController {
   // TODO: Закрыть от неавторизированных пользователей
   public async addFavoriteForUser(req: Request, res: Response) {
     const { offerId } = req.body;
-    
+
     // TODO: Не можем добавлять одни и те же офферы в избранное
     // if (favorites.map((item) => item._id.toString()).includes(params.offerId)) {
     //   throw new HttpError(
@@ -142,7 +142,7 @@ export class UserController extends BaseController {
     //   );
     // }
 
-    const mockUserId = "67152f430ace5d6726f44745";
+    const mockUserId = '67152f430ace5d6726f44745';
 
     if (!offerId) {
       throw new HttpError(
@@ -170,7 +170,7 @@ export class UserController extends BaseController {
   public async deleteFavoriteForUser(req: Request, res: Response) {
     const { offerId } = req.params;
 
-    const mockUserId = "67152f430ace5d6726f44745";
+    const mockUserId = '67152f430ace5d6726f44745';
 
     if (!offerId) {
       throw new HttpError(

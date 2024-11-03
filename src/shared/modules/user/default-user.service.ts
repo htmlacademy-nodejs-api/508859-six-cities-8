@@ -72,9 +72,9 @@ export class DefaultUserService implements UserService {
   // offerService findMany id
   // }
   public async findFavoritesForUser(userId: string): Promise<DocumentType<OfferEntity>[]> {
-    const user = await this.userModel.findById(userId);
+    // const user = await this.userModel.findById(userId);
     // -? Как прокинуть user вместо userId
-    return this.offerService.findFavoritesByUserId(user);
+    return this.offerService.findFavoritesByUserId(userId);
   }
 
   // TODO: Закрыть от неавторизированных пользователей

@@ -4,7 +4,7 @@ import { UserRdo } from '../../user/rdo/user.rdo.js';
 
 export class CommentRdo {
   @Expose()
-  @Transform(params => params.obj._id.toString())
+  @Transform((params) => params.obj._id.toString())
   public id!: string;
 
   @Expose()

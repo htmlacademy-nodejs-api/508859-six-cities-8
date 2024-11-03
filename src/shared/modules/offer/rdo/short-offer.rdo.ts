@@ -3,7 +3,7 @@ import { City, OfferType } from '../../../types/index.js';
 
 export class ShortOfferRdo {
   @Expose()
-  @Transform(params => params.obj._id.toString())
+  @Transform((params) => params.obj._id.toString())
   public id!: string;
 
   @Expose()

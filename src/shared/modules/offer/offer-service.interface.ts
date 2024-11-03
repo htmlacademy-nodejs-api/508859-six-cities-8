@@ -15,7 +15,7 @@ export interface OfferService extends DocumentExists {
   // TODO: икремент добавления количества комментария - нужен он?
   incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   // -? как правильно типизировать
-  findFavoritesByUserId(user: any): Promise<DocumentType<OfferEntity>[]>;
+  findFavoritesByUserId(userId: string): Promise<DocumentType<OfferEntity>[]>;
   exists(documentId: string): Promise<boolean>;
   calculateOfferRating(offerId: string): Promise<DocumentType<OfferEntity> | null>;
 }

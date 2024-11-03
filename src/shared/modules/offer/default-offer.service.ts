@@ -79,7 +79,7 @@ export class DefaultOfferService implements OfferService {
 
     // .populate(['author'])
   }
-  
+
   // TODO: Проверить метод
   public async findByPremium(): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel
@@ -113,8 +113,8 @@ export class DefaultOfferService implements OfferService {
   }
 
 
-  public async findFavoritesByUserId(user: any): Promise<DocumentType<OfferEntity>[]> {
-    console.log("user", user);
+  public async findFavoritesByUserId(userId: string): Promise<DocumentType<OfferEntity>[]> {
+    console.log('userId', userId);
     return this.offerModel
       .aggregate([
         ...authorAggregation,
@@ -122,12 +122,12 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
-      // console.log("user", user);
+  // console.log("user", user);
 
-    // const favoritesIds = user.favorites.map((item: Types.ObjectId) => ({ _id: item })); 
-    // const user = await this.userService.findById(userId);
-    // const offers = user.favorites.map(() => await this.);
-    // console.log("user", user);
+  // const favoritesIds = user.favorites.map((item: Types.ObjectId) => ({ _id: item }));
+  // const user = await this.userService.findById(userId);
+  // const offers = user.favorites.map(() => await this.);
+  // console.log("user", user);
   // { $match: { 'author': new Types.ObjectId(userId) } },
 
   // public async findNew(count: number): Promise<DocumentType<OfferEntity>[]> {

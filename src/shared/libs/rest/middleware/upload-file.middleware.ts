@@ -24,23 +24,23 @@ export class UploadFileMiddleware implements Middleware {
         callback(null, `${filename}.${fileExtention}`);
       }
     });
-    
+
     // TODO: Разобраться
     const fileFilter = (
-        _: Request,
-        file: Express.Multer.File,
-        callback: multer.FileFilterCallback,
-      ) => {
-        const fileExtention = file.originalname.split('.').pop();
-        if (fileExtention && !IMAGE_EXTENSIONS.includes(fileExtention)) {
-          return callback(new HttpError(
-            StatusCodes.BAD_REQUEST,
-            'Invalid file extension',
-            'UploadFileMiddleware',
-          ));
-        }
-        return callback(null, true);
-      };
+      _: Request,
+      file: Express.Multer.File,
+      callback: multer.FileFilterCallback,
+    ) => {
+      const fileExtention = file.originalname.split('.').pop();
+      if (fileExtention && !IMAGE_EXTENSIONS.includes(fileExtention)) {
+        return callback(new HttpError(
+          StatusCodes.BAD_REQUEST,
+          'Invalid file extension',
+          'UploadFileMiddleware',
+        ));
+      }
+      return callback(null, true);
+    };
 
     const uploadSingleFileMiddleware = multer({ storage, fileFilter })
       .single(this.fieldName);
