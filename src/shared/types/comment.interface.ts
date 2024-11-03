@@ -4,5 +4,5 @@ export interface Comment {
     text: string;
     publicationDate: Date;
     rating: number;
-    author: User;
+    user: User;
 }

@@ -5,29 +5,29 @@ import { Middleware } from './middleware.interface.js';
 import { DocumentExists } from '../../../types/index.js';
 import { HttpError } from '../errors/index.js';
 
-export class DocumentExistsMiddleware implements Middleware {
+export class DocumentQueryExistsMiddleware implements Middleware {
   constructor(
     private readonly service: DocumentExists,
     private readonly entityName: string,
-    private readonly paramName: string,
+    private readonly query: string,
   ) {}
 
-  public async execute({ params }: Request, _: Response, next: NextFunction): Promise<void> {
-    const documentId = params[this.paramName];
+  public async execute({ query }: Request, _: Response, next: NextFunction): Promise<void> {
+    const documentId = query[this.query];
 
     if (!documentId) {
       throw new HttpError(
         StatusCodes.BAD_REQUEST,
-        'documentId is not valid.',
-        'DocumentExistsMiddleware'
+        'documentId query param is not valid.',
+        'DocumentQueryExistsMiddleware'
       );
     }
 
-    if (! await this.service.exists(documentId)) {
+    if (! await this.service.exists(String(documentId))) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
-        `${this.entityName} with ${documentId} not found.`,
-        'DocumentExistsMiddleware'
+        `${this.entityName} with ${documentId} query not found.`,
+        'DocumentQueryExistsMiddleware'
       );
     }
 

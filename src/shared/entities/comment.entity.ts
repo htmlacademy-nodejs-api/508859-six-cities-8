@@ -34,7 +34,7 @@ export class CommentEntity extends defaultClasses.TimeStamps {
       ref: () => UserEntity,
       required: true,
     })
-    public author!: Ref<UserEntity>;
+    public userId!: Ref<UserEntity>;
 
     public get id() {
       return this._id.toString();

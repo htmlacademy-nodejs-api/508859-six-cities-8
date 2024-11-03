@@ -7,7 +7,9 @@ import { CreateUserDto } from './dto/create-user.dto.js';
 import { Logger } from '../../libs/logger/index.js';
 import { COMPONENT } from '../../constants/index.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
-import { UserEntity } from '../../entities/index.js';
+import { OfferEntity, UserEntity } from '../../entities/index.js';
+import { OfferService } from '../offer/offer-service.interface.js';
+import { Types } from 'mongoose';
 
 @injectable()
 export class DefaultUserService implements UserService {
@@ -15,6 +17,7 @@ export class DefaultUserService implements UserService {
   constructor(
         @inject(COMPONENT.LOGGER) private readonly logger: Logger,
         @inject(COMPONENT.USER_MODEL) private readonly userModel: types.ModelType<UserEntity>,
+        @inject(COMPONENT.OFFER_SERVICE) private readonly offerService: OfferService
   ) {}
 
   public async create(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
@@ -68,18 +71,19 @@ export class DefaultUserService implements UserService {
   //   return this.userModel.findById(userId);
   // offerService findMany id
   // }
-  // TODO: Как с помощью агрегации Монги найти элемент
-  public async findFavoritesForUser(userId: string): Promise<DocumentType<UserEntity> | null> {
-    return this.userModel.findById(userId);
+  public async findFavoritesForUser(userId: string): Promise<DocumentType<OfferEntity>[]> {
+    const user = await this.userModel.findById(userId);
+    // -? Как прокинуть user вместо userId
+    return this.offerService.findFavoritesByUserId(user);
   }
 
   // TODO: Закрыть от неавторизированных пользователей
   public async addFavorite(userId: string, offerId: string): Promise<DocumentType<UserEntity> | null> {
-    return this.userModel.findByIdAndUpdate(userId, { $addToSet: { favorites: offerId } }, { new: true }).exec();
+    return this.userModel.findByIdAndUpdate(userId, { $addToSet: { favorites: new Types.ObjectId(offerId) } }, { new: true }).exec();
   }
 
   // TODO: Закрыть от неавторизированных пользователей
   public async deleteFavorite(userId: string, offerId: string): Promise<DocumentType<UserEntity> | null> {
-    return this.userModel.findByIdAndUpdate(userId, { $pull: { favorites: offerId } }, { new: true }).exec();
+    return this.userModel.findByIdAndUpdate(userId, { $pull: { favorites: new Types.ObjectId(offerId) } }, { new: true }).exec();
   }
 }

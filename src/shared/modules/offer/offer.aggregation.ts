@@ -1,5 +1,19 @@
+import { Types } from 'mongoose';
 import { SortType } from '../../types/sort-type.enum.js';
 import { DEFAULT_COMMENT_COUNT } from '../comment/comment.constant.js';
+
+export const favoritesAggregation = (userId: string) => ([
+  {
+    $lookup: {
+      from: 'users',
+      pipeline: [
+        { $match: { 'userId': new Types.ObjectId(userId) } },
+        // { $project: { favorites: 1 } }
+      ],
+      as: 'user'
+    },
+  }
+]);
 
 // export const offerRatingAggregation = [
 //     {
@@ -33,11 +47,20 @@ import { DEFAULT_COMMENT_COUNT } from '../comment/comment.constant.js';
 export const authorAggregation = [{
   $lookup: {
     from: 'users',
-    localField: 'author',
+    localField: 'userId',
     foreignField: '_id',
-    as: 'author',
+    as: 'user',
   },
 }]; // , { $unwind: '$author' }
+
+// export const favoriteAggregation = [{
+//   $lookup: {
+//     from: 'users',
+//     localField: '_id',
+//     foreignField: '_id',
+//     as: 'author',
+//   },
+// }]
 
 // export const populateAuthor = [
 //   {
@@ -83,6 +106,6 @@ export const populateComments = [
     $limit: DEFAULT_COMMENT_COUNT
   },
   {
-    $sort: { createdAt: SortType.DOWN }
+    $sort: { createdAt: SortType.DESC }
   }
 ];

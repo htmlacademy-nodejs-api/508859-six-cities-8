@@ -25,3 +25,42 @@ Content-Type: application/json
 }
 
 ###
+
+## Показать список избранных предложений
+
+GET  http://localhost:6000/users/favorites HTTP/1.1
+Content-Type: application/json
+
+###
+
+##  Добавить предложение в избранное
+
+POST http://localhost:6000/users/favorites HTTP/1.1
+Content-Type: application/json
+
+{
+  "offerId": "67152f430ace5d6726f4474d"
+}
+
+###
+
+## Удалить предложение из избранного
+
+DELETE  http://localhost:6000/users/favorites/67152f430ace5d6726f44747 HTTP/1.1
+Content-Type: application/json
+
+###
+
+## Отправить изображение
+
+POST http://localhost:6000/users/62823cb2c5a64ce9f1b50eb6/avatar HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="screen.png"
+Content-Type: image/png
+
+< /Users/spider_net/Desktop/screen.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###

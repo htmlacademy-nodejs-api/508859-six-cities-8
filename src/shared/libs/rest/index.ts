@@ -12,3 +12,8 @@ export { Middleware } from './middleware/middleware.interface.js';
 export { ValidateObjectIdMiddleware } from './middleware/validate-objectid.middleware.js';
 export { ValidateDtoMiddleware } from './middleware/validate-dto.middleware.js';
 export { DocumentExistsMiddleware } from './middleware/document-exists.middleware.js';
+export { UploadFileMiddleware } from './middleware/upload-file.middleware.js';
+export { ValidateObjectIdQueryMiddleware } from './middleware/validate-objectid-query.middleware.js';
+export { DocumentQueryExistsMiddleware } from './middleware/document-query-exists.middleware.js';
+export { DocumentBodyExistsMiddleware } from './middleware/document-body-exists.middleware.js';
+export { ValidateObjectIdBodyMiddleware } from './middleware/validate-objectid-body.middleware.js';

@@ -18,7 +18,7 @@ export interface Offer {
   guestCount: number;
   cost: number;
   conveniences: ConvenienceType[];
-  author: User;
+  user: User;
   commentCount: number;
   coordinate: Coordinate;
 }

@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { BaseController, HttpError, HttpMethod, ValidateDtoMiddleware } from '../../libs/rest/index.js';
+import { BaseController, DocumentBodyExistsMiddleware, DocumentQueryExistsMiddleware, HttpError, HttpMethod, ValidateDtoMiddleware, ValidateObjectIdQueryMiddleware } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { CommentService } from './comment-service.interface.js';
 import { OfferService } from '../offer/index.js';
@@ -28,30 +28,20 @@ export default class CommentController extends BaseController {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
-        new ValidateDtoMiddleware(CreateCommentDto)
+        new ValidateDtoMiddleware(CreateCommentDto),
+        // ?- Спросить необходимость инжектировать сервис для проверки в контроллере
+        new DocumentBodyExistsMiddleware(this.offerService, 'Offer', 'offerId')
       ]
     });
-    this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+    this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index, middlewares: [
+      new ValidateObjectIdQueryMiddleware('offerId'),
+      // ?- Спросить необходимость инжектировать сервис для проверки в контроллере
+      new DocumentQueryExistsMiddleware(this.offerService, 'Offer', 'offerId')
+    ] });
   }
 
   public async index({ query }: Request<unknown, unknown, unknown, RequestQueryComment>, res: Response): Promise<void> {
-    const offerId = query?.offerId;
-
-    if (!offerId) {
-      throw new HttpError(
-        StatusCodes.BAD_REQUEST,
-        'OfferId param is not correct.',
-        'CommentController'
-      );
-    }
-
-    if (!await this.offerService.exists(offerId)) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Offer with id ${offerId} not found.`,
-        'CommentController'
-      );
-    }
+    const offerId = String(query.offerId);
 
     const comments = await this.commentService.findByOfferId(offerId);
     this.ok(res, fillDTO(CommentRdo, comments));
@@ -71,7 +61,9 @@ export default class CommentController extends BaseController {
     }
 
     const comment = await this.commentService.create(body);
+
     await this.offerService.incCommentCount(body.offerId);
+
     this.created(res, fillDTO(CommentRdo, comment));
   }
 }

@@ -31,7 +31,7 @@ export class TSVFileReader extends EventEmitter implements FileReader {
       guestCount,
       cost,
       conveniences,
-      author,
+      userId,
       commentCount,
       coordinate,
     ] = line.split('\t');
@@ -50,7 +50,7 @@ export class TSVFileReader extends EventEmitter implements FileReader {
       guestCount: parseInt(guestCount as string, DECIMAL_RADIX),
       cost: parseInt(cost as string, DECIMAL_RADIX),
       conveniences: this.parseStringToArray<ConvenienceType>(conveniences || '', ','),
-      author: this.parseUser(author || ''),
+      user: this.parseUser(userId || ''),
       commentCount: parseInt(commentCount as string, DECIMAL_RADIX),
       coordinate: this.parseStringToCoordinate(coordinate || '')
     };

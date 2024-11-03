@@ -1,25 +1,24 @@
 import { IsEmail, IsEnum, IsString, Length } from 'class-validator';
 
-import { CREATE_USER_MESSAGES } from './create-user.messages.js';
-
 import { UserType } from '../../../types/user-type.enum.js';
+import { USER_DTO_CONSTRAINTS } from '../user.constant.js';
 
 export class CreateUserDto {
-  @IsEmail({}, { message: CREATE_USER_MESSAGES.EMAIL.invalidFormat })
+  @IsEmail()
   public email!: string;
 
   // TODO: Указываем дефолтное значение и поле необязательно
-  @IsString({ message: CREATE_USER_MESSAGES.AVATAR_PATH.invalidFormat })
+  @IsString()
   public avatarPath!: string;
 
-  @IsString({ message: CREATE_USER_MESSAGES.USERNAME.invalidFormat })
-  @Length(1, 15, { message: CREATE_USER_MESSAGES.USERNAME.lengthField })
+  @IsString()
+  @Length(USER_DTO_CONSTRAINTS.USERNAME.MIN_LENGTH, USER_DTO_CONSTRAINTS.USERNAME.MAX_LENGTH)
   public userName!: string;
 
-  @IsString({ message: CREATE_USER_MESSAGES.PASSWORD.invalidFormat })
-  @Length(6, 12, { message: CREATE_USER_MESSAGES.PASSWORD.lengthField })
+  @IsString()
+  @Length(USER_DTO_CONSTRAINTS.PASSWORD.MIN_LENGTH, USER_DTO_CONSTRAINTS.PASSWORD.MAX_LENGTH)
   public password!: string;
 
-  @IsEnum(UserType, { message: CREATE_USER_MESSAGES.USER_TYPE.invalid })
+  @IsEnum(UserType)
   public type!: UserType;
 }

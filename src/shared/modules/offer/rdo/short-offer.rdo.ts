@@ -1,8 +1,9 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { City, OfferType } from '../../../types/index.js';
 
 export class ShortOfferRdo {
   @Expose()
+  @Transform(params => params.obj._id.toString())
   public id!: string;
 
   @Expose()

@@ -1,18 +1,20 @@
-import { IsArray, IsEnum, IsInt, IsObject, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsInt, IsObject, Max, MaxLength, Min, MinLength, ValidateNested } from 'class-validator';
 
 import { City, ConvenienceType, Coordinate, OfferType } from '../../../types/index.js';
-import { CREATE_OFFER_VALIDATION_MESSAGE } from './create-offer.messages.js';
+import { Type } from 'class-transformer';
+import { CoordinateDTO } from './coordinate.dto.js';
+import { OFFER_DTO_CONSTRAINTS } from '../offer.constant.js';
 
 export class CreateOfferDto {
-  @MinLength(10, { message: CREATE_OFFER_VALIDATION_MESSAGE.TITLE.minLength })
-  @MaxLength(100, { message: CREATE_OFFER_VALIDATION_MESSAGE.TITLE.maxLength })
+  @MinLength(OFFER_DTO_CONSTRAINTS.TITLE.MIN_LENGTH)
+  @MaxLength(OFFER_DTO_CONSTRAINTS.TITLE.MAX_LENGTH)
   public title!: string;
 
-  @MinLength(20, { message: CREATE_OFFER_VALIDATION_MESSAGE.TITLE.minLength })
-  @MaxLength(1024, { message: CREATE_OFFER_VALIDATION_MESSAGE.TITLE.maxLength })
+  @MinLength(OFFER_DTO_CONSTRAINTS.DESCRIPTION.MIN_LENGTH)
+  @MaxLength(OFFER_DTO_CONSTRAINTS.DESCRIPTION.MAX_LENGTH)
   public description!: string;
 
-  @IsEnum(City, { message: CREATE_OFFER_VALIDATION_MESSAGE.CITY.invalid })
+  @IsEnum(City)
   public city!: City;
 
   public previewImg!: string;
@@ -20,40 +22,36 @@ export class CreateOfferDto {
   // TODO: 6 фотографий всегда
   public images!: string[];
 
-  // TODO: булево значение
+  @IsBoolean()
   public isPremium!: boolean;
 
-  @IsEnum(OfferType, { message: CREATE_OFFER_VALIDATION_MESSAGE.OFFER_TYPE.invalid })
+  @IsEnum(OfferType)
   public type!: OfferType;
 
-  @IsInt({ message: CREATE_OFFER_VALIDATION_MESSAGE.FLAT_COUNT.invalidFormat })
-  @Min(1, { message: CREATE_OFFER_VALIDATION_MESSAGE.FLAT_COUNT.minValue })
-  @Max(8, { message: CREATE_OFFER_VALIDATION_MESSAGE.FLAT_COUNT.maxValue })
+  @IsInt()
+  @Min(OFFER_DTO_CONSTRAINTS.FLAT_COUNT.MIN_VALUE)
+  @Max(OFFER_DTO_CONSTRAINTS.FLAT_COUNT.MAX_VALUE)
   public flatCount!: number;
 
-  @IsInt({ message: CREATE_OFFER_VALIDATION_MESSAGE.GUEST_COUNT.invalidFormat })
-  @Min(1, { message: CREATE_OFFER_VALIDATION_MESSAGE.GUEST_COUNT.minValue })
-  @Max(10, { message: CREATE_OFFER_VALIDATION_MESSAGE.GUEST_COUNT.maxValue })
+  @IsInt()
+  @Min(OFFER_DTO_CONSTRAINTS.GUEST_COUNT.MIN_VALUE)
+  @Max(OFFER_DTO_CONSTRAINTS.GUEST_COUNT.MAX_VALUE)
   public guestCount!: number;
 
-  @IsInt({ message: CREATE_OFFER_VALIDATION_MESSAGE.COST.invalidFormat })
-  @Min(100, { message: CREATE_OFFER_VALIDATION_MESSAGE.COST.minValue })
-  @Max(100000, { message: CREATE_OFFER_VALIDATION_MESSAGE.COST.maxValue })
+  @IsInt()
+  @Min(OFFER_DTO_CONSTRAINTS.COST.MIN_VALUE)
+  @Max(OFFER_DTO_CONSTRAINTS.COST.MAX_VALUE)
   public cost!: number;
 
-  @IsArray({ message: CREATE_OFFER_VALIDATION_MESSAGE.CONVENIENCES.invalidFormat })
+  @IsArray()
   // @IsEnum({ each: true, message: CREATE_OFFER_VALIDATION_MESSAGE.CONVENIENCES.invalid })
   public conveniences!: ConvenienceType[];
 
-  // TODO: Как указываем объекты
-  @IsObject({ })
+  @ValidateNested()
+  @IsObject()
+  @Type(() => CoordinateDTO)
   public coordinate!: Coordinate;
 
   // @IsMongoId({ message: CREATE_OFFER_VALIDATION_MESSAGE.AUTHOR.invalidId })
-  public author?: string;
-
-  // // @IsDateString({}, { message: CREATE_OFFER_VALIDATION_MESSAGE.PUBLICATION_DATE.invalidFormat })
-  // public publicationDate?: Date;
-
-  public commentCount?: number;
+  public userId?: string;
 }
