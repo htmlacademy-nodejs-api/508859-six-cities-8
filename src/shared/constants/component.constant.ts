@@ -13,4 +13,6 @@ export const COMPONENT = {
   EXCEPTION_FILTER: Symbol.for('kExceptionFilter'),
   USER_CONTROLLER: Symbol.for('kUserController'),
   COMMENT_CONTROLLER: Symbol.for('kCommentController'),
+  AUTH_SERVICE: Symbol.for('kAuthService'),
+  AUTH_EXCEPTION_FILTER: Symbol.for('kAuthExceptionFilter'),
 } as const;

@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 
-import { BaseController, DocumentExistsMiddleware, HttpError, HttpMethod, RequestQuery, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
+import { BaseController, DocumentExistsMiddleware, HttpError, HttpMethod, PrivateRouteMiddleware, RequestQuery, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { COMPONENT } from '../../constants/component.constant.js';
 import { OfferService } from './offer-service.interface.js';
@@ -11,10 +11,13 @@ import { StatusCodes } from 'http-status-codes';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { DEFAULT_OFFER_COUNT, MAX_OFFER_COUNT } from './offer.constant.js';
 import { IdOfferRdo } from './rdo/id-offer.rdo.js';
-import { ParamOfferId } from './type/param-offerid.type.js';
-import { CreateOfferRequest } from './type/create-offer-request.type.js';
+import { CreateOfferRequest } from './types/create-offer-request.type.js';
 import { CommentService } from '../comment/index.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
+import { ShortOfferRdo } from './rdo/short-offer.rdo.js';
+import { RequestPremiumQuery } from './types/request-premium-query.type.js';
+import { City } from '../../types/city.enum.js';
+import { ParamOfferId } from '../../types/index.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -28,11 +31,12 @@ export class OfferController extends BaseController {
     this.logger.info('Register routes for OfferController');
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+    this.addRoute({ path: '/premium', method: HttpMethod.Get, handler: this.findPremium });
     this.addRoute({
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateOfferDto)]
+      middlewares: [new PrivateRouteMiddleware(), new ValidateDtoMiddleware(CreateOfferDto)]
     });
     this.addRoute({
       path: '/:offerId',
@@ -42,17 +46,32 @@ export class OfferController extends BaseController {
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')]
     });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Patch, handler: this.update, middlewares: [new ValidateObjectIdMiddleware('offerId'), new ValidateDtoMiddleware(UpdateOfferDto), new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')] });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Delete, handler: this.delete, middlewares: [new ValidateObjectIdMiddleware('offerId'), new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')] });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Patch,
+      handler: this.update,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new ValidateDtoMiddleware(UpdateOfferDto),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Delete,
+      handler: this.delete,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+      ] });
   }
 
   public async index({ query } : Request<unknown, unknown, unknown, RequestQuery>, res: Response): Promise<void> {
     // TODO: Опционально сделать middleware для limit (опционально)
     const limitNum = Number(query?.limit);
     const limit = query?.limit && !Number.isNaN(limitNum) && limitNum < MAX_OFFER_COUNT ? limitNum : DEFAULT_OFFER_COUNT;
-
-    // TODO: Временно сделать const userId = '<ID>';
-    // const userId = req.user.id // AFTER JWT
 
     if (!Number.isSafeInteger(limit)) {
       throw new HttpError(
@@ -64,37 +83,40 @@ export class OfferController extends BaseController {
 
     const offers = await this.offerService.find(limit);
 
-    const responseData = fillDTO(FullOfferRdo, offers);
+    const responseData = fillDTO(ShortOfferRdo, offers);
+    this.ok(res, responseData);
+  }
+
+  public async findPremium({ query }: Request<unknown, unknown, unknown, RequestPremiumQuery>, res: Response): Promise<void> {
+    const city = query?.city;
+
+    if (!city) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'City in query is not correct.',
+        'OfferController'
+      );
+    }
+
+    if (!(city in City)) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'City in query not included in the list of available cities.',
+        'OfferController'
+      );
+    }
+    const offers = await this.offerService.findByPremium(city);
+
+    const responseData = fillDTO(ShortOfferRdo, offers);
     this.ok(res, responseData);
   }
 
   public async create(
-    { body }: CreateOfferRequest,
+    { body, tokenPayload }: CreateOfferRequest,
     res: Response
   ): Promise<void> {
-
-    // -? Как проверить что данные пользователя верные?
-
-    // const existOffer = await this.offerService.findByCategoryName(body.name);
-
-    // if (existCategory) {
-    //   const existCategoryError = new Error(`Category with name «${body.name}» exists.`);
-    // throw new HttpError(
-    // StatusCodes.UNPROCESSABLE_ENTITY,
-    // `Category with name «${body.name}» exists.`,
-    // 'CategoryController'
-    // );
-    //   this.send(res,
-    //     StatusCodes.UNPROCESSABLE_ENTITY,
-    //     { error: existCategoryError.message }
-    //   );
-
-    //   return this.logger.error(existCategoryError.message, existCategoryError);
-    // }
-
-    // TODO: доработать валидацию на 400-ую ошибку
     // -? получаем ли мы здесь расширинного автора
-    const result = await this.offerService.create(body);
+    const result = await this.offerService.create({...body, userId: tokenPayload.id });
     const offer = await this.offerService.findById(result.id);
     this.created(res, fillDTO(FullOfferRdo, offer));
   }

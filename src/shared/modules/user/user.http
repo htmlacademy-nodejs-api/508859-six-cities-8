@@ -5,10 +5,10 @@ POST http://localhost:6000/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "ilkolmakov@mail.ru",
-  "avatarPath": "torrance.png",
+  "email": "ilya.kolmakov.i@mail.ru",
+  "avatarPath": "/Users/ilakolmakov/Downloads/user1.png",
   "userName": "IlyaK",
-  "password": "test123",
+  "password": "qw12345678",
   "type": "pro"
 }
 
@@ -20,7 +20,7 @@ POST http://localhost:6000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "ilkolmakov@yandex.ru",
+  "email": "ilya.kolmakov.i@mail.ru",
   "password": "qw12345678"
 }
 
@@ -30,6 +30,7 @@ Content-Type: application/json
 
 GET  http://localhost:6000/users/favorites HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtYWlsLnJ1IiwidXNlck5hbWUiOiJJbHlhSyIsImlkIjoiNjcyODc5YzZhZmNiZmFmOGI3YzQxM2FiIiwiaWF0IjoxNzMwNzA2Mjk0LCJleHAiOjE3MzA4NzkwOTR9.HryFJPl7jJPSn1iRFLlUBLxO8nh6u8RT5kwXwRMwhVU
 
 ###
 
@@ -37,9 +38,10 @@ Content-Type: application/json
 
 POST http://localhost:6000/users/favorites HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtYWlsLnJ1IiwidXNlck5hbWUiOiJJbHlhSyIsImlkIjoiNjcyODc5YzZhZmNiZmFmOGI3YzQxM2FiIiwiaWF0IjoxNzMwNzA2Mjk0LCJleHAiOjE3MzA4NzkwOTR9.HryFJPl7jJPSn1iRFLlUBLxO8nh6u8RT5kwXwRMwhVU
 
 {
-  "offerId": "67152f430ace5d6726f4474d"
+  "offerId": "6727abe4326ef99e212e42f5"
 }
 
 ###
@@ -48,19 +50,26 @@ Content-Type: application/json
 
 DELETE  http://localhost:6000/users/favorites/67152f430ace5d6726f44747 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtYWlsLnJ1IiwidXNlck5hbWUiOiJJbHlhSyIsImlkIjoiNjcyODc5YzZhZmNiZmFmOGI3YzQxM2FiIiwiaWF0IjoxNzMwNzA2Mjk0LCJleHAiOjE3MzA4NzkwOTR9.HryFJPl7jJPSn1iRFLlUBLxO8nh6u8RT5kwXwRMwhVU
 
 ###
 
-## Отправить изображение
+## Отправить изображение // -? Закрыть от неавторизированных пользователей
 
 POST http://localhost:6000/users/62823cb2c5a64ce9f1b50eb6/avatar HTTP/1.1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="avatar"; filename="screen.png"
+Content-Disposition: form-data; name="avatar"; filename="user1.png"
 Content-Type: image/png
 
-< /Users/spider_net/Desktop/screen.png
+< /Users/ilakolmakov/Downloads/user1.png
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
+## Проверить токен пользователя
+GET http://localhost:6000/users/login HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtYWlsLnJ1IiwidXNlck5hbWUiOiJJbHlhSyIsImlkIjoiNjcyODc5YzZhZmNiZmFmOGI3YzQxM2FiIiwiaWF0IjoxNzMwNzA2Mjk0LCJleHAiOjE3MzA4NzkwOTR9.HryFJPl7jJPSn1iRFLlUBLxO8nh6u8RT5kwXwRMwhVU
 
 ###

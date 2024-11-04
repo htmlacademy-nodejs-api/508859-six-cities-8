@@ -6,11 +6,12 @@ import { Logger } from '../../libs/logger/index.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { COMPONENT } from '../../constants/component.constant.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
-import { DEFAULT_PREMIUM_OFFER_COUNT } from './offer.constant.js';
+import { MAX_PREMIUM_OFFER_COUNT } from './offer.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import { Types } from 'mongoose';
-import { authorAggregation } from './offer.aggregation.js';
+import { authorAggregation, favoriteAggregation } from './offer.aggregation.js';
 import { OfferEntity } from '../../entities/index.js';
+import { City } from '../../types/city.enum.js';
 // import { CommentService } from '../comment/index.js';
 // import { UserService } from '../user/user-service.interface.js';
 
@@ -30,6 +31,7 @@ export class DefaultOfferService implements OfferService {
     return this.offerModel
       .aggregate([
         ...authorAggregation,
+        // ...favoriteAggregation(userId),
         { $limit: limit },
         { $sort: { createdAt: SortType.DESC }}
       ])
@@ -59,7 +61,6 @@ export class DefaultOfferService implements OfferService {
   }
 
   // TODO: Удалять вместо с предложением комментарии авторматически
-  // TODO: Закрыть от неавторизированных пользователей
   public async deleteById(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
       .findByIdAndDelete(offerId)
@@ -80,11 +81,16 @@ export class DefaultOfferService implements OfferService {
     // .populate(['author'])
   }
 
-  // TODO: Проверить метод
-  public async findByPremium(): Promise<DocumentType<OfferEntity>[]> {
-    return this.offerModel
-      .find({ isPremium: true }, {}, { limit: DEFAULT_PREMIUM_OFFER_COUNT })
-      .sort({ publicationDate: SortType.DESC });
+  // TODO: isFavorite, comments
+  public async findByPremium(city: City): Promise<DocumentType<OfferEntity>[]> {
+    return this.offerModel.aggregate([
+      { $match: {
+        city,
+        isPremium: true,
+      } },
+      { $sort: { createdAt: SortType.DESC } },
+      { $limit: MAX_PREMIUM_OFFER_COUNT },
+    ]);
   }
 
   public async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
@@ -114,20 +120,18 @@ export class DefaultOfferService implements OfferService {
 
 
   public async findFavoritesByUserId(userId: string): Promise<DocumentType<OfferEntity>[]> {
-    console.log('userId', userId);
     return this.offerModel
       .aggregate([
         ...authorAggregation,
+        ...favoriteAggregation(userId),
+        { $match: { isFavorite: true }}
       ])
       .exec();
   }
 
-  // console.log("user", user);
-
   // const favoritesIds = user.favorites.map((item: Types.ObjectId) => ({ _id: item }));
   // const user = await this.userService.findById(userId);
   // const offers = user.favorites.map(() => await this.);
-  // console.log("user", user);
   // { $match: { 'author': new Types.ObjectId(userId) } },
 
   // public async findNew(count: number): Promise<DocumentType<OfferEntity>[]> {

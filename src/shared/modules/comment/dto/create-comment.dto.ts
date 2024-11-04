@@ -14,6 +14,6 @@ export class CreateCommentDto {
   @IsMongoId()
   public offerId!: string;
 
-  @IsMongoId()
+  // -? А не стоит ли убрать параметр, если мы из токена получаем  userId
   public userId!: string;
 }

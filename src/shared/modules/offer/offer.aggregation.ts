@@ -2,6 +2,24 @@ import { Types } from 'mongoose';
 import { SortType } from '../../types/sort-type.enum.js';
 import { DEFAULT_COMMENT_COUNT } from '../comment/comment.constant.js';
 
+export const favoriteAggregation = (userId: string, offerId: string = '') => ([
+  {
+    $lookup: {
+      from: 'users',
+      pipeline: [
+        { $match: { '_id': new Types.ObjectId(userId) } },
+        { $project: { favorites: 1 } }
+      ],
+      as: 'user'
+    },
+  },
+  { $unwind: '$user' },
+  { $addFields: { isFavorite: {
+    $in: [offerId ? new Types.ObjectId(offerId) : '$_id' , '$user.favorites']
+  } }},
+  { $unset: 'user' }
+]);
+
 export const favoritesAggregation = (userId: string) => ([
   {
     $lookup: {

@@ -11,9 +11,16 @@ Content-Type: application/json
 
 ###
 
+## Получить список премиальных предложений
+GET http://localhost:6000/offers/premium?city=Paris HTTP/1.1
+Content-Type: application/json
+
+###
+
 ## Добавить новое предложение
 POST http://localhost:6000/offers HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtYWlsLnJ1IiwidXNlck5hbWUiOiJJbHlhSyIsImlkIjoiNjcyODc5YzZhZmNiZmFmOGI3YzQxM2FiIiwiaWF0IjoxNzMwNzA2Mjk0LCJleHAiOjE3MzA4NzkwOTR9.HryFJPl7jJPSn1iRFLlUBLxO8nh6u8RT5kwXwRMwhVU
 
 {
     "title": "Pullman Paris Tour Eiffel",
@@ -25,7 +32,7 @@ Content-Type: application/json
     "flatCount": 1,
     "guestCount": 4,
     "cost": 4000,
-    "isPremium": false,
+    "isPremium": true,
     "conveniences": ["Washer", "Towels", "Fridge"],
     "userId": "67152f430ace5d6726f44745",
     "coordinate": {
@@ -44,8 +51,9 @@ Content-Type: application/json
 ###
 
 ## Редактирование предложения
-PATCH http://localhost:6000/offers/6727b44804d5909bd0be67d9 HTTP/1.1
+PATCH http://localhost:6000/offers/6728a3badfee5f482348a4eb HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtYWlsLnJ1IiwidXNlck5hbWUiOiJJbHlhSyIsImlkIjoiNjcyODc5YzZhZmNiZmFmOGI3YzQxM2FiIiwiaWF0IjoxNzMwNzA2Mjk0LCJleHAiOjE3MzA4NzkwOTR9.HryFJPl7jJPSn1iRFLlUBLxO8nh6u8RT5kwXwRMwhVU
 
 {
   "title": "Cologne Country Lodge"
@@ -56,5 +64,6 @@ Content-Type: application/json
 ## Удаление предложения
 DELETE http://localhost:6000/offers/6727868448704157cb5fc46e HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtYWlsLnJ1IiwidXNlck5hbWUiOiJJbHlhSyIsImlkIjoiNjcyODc5YzZhZmNiZmFmOGI3YzQxM2FiIiwiaWF0IjoxNzMwNzA2Mjk0LCJleHAiOjE3MzA4NzkwOTR9.HryFJPl7jJPSn1iRFLlUBLxO8nh6u8RT5kwXwRMwhVU
 
 ###

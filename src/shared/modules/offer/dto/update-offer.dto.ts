@@ -1,4 +1,21 @@
-import { IsArray, IsEnum, IsInt, IsObject, IsOptional, Max, MaxLength, Min, MinLength, ValidateNested } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  ArrayUnique,
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsInt,
+  IsObject,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
+
 import { City, ConvenienceType, Coordinate, OfferType } from '../../../types/index.js';
 import { Type } from 'class-transformer';
 import { CoordinateDTO } from './coordinate.dto.js';
@@ -20,12 +37,17 @@ export class UpdateOfferDto {
   public city?: City;
 
   @IsOptional()
+  @IsString()
   public previewImg?: string;
 
   @IsOptional()
+  @IsArray()
+  @ArrayMinSize(OFFER_DTO_CONSTRAINTS.IMAGE.MIN_LENGTH)
+  @ArrayMaxSize(OFFER_DTO_CONSTRAINTS.IMAGE.MAX_LENGTH)
   public images?: string[];
 
   @IsOptional()
+  @IsBoolean()
   public isPremium?: boolean;
 
   @IsOptional()
@@ -51,8 +73,7 @@ export class UpdateOfferDto {
   public cost?: number;
 
   @IsOptional()
-  @IsArray()
-  // @IsEnum({ each: true, message: UPDATE_OFFER_VALIDATION_MESSAGE.CONVENIENCES.invalid })
+  @ArrayUnique<ConvenienceType>()
   public conveniences?: ConvenienceType[];
 
   @IsOptional()
