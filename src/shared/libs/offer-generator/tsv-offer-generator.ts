@@ -5,10 +5,8 @@ import { City, Coordinate, MockServerData, OfferType } from '../../types/index.j
 import { generateRandomValue, getRandomItem, getRandomItems } from '../../helpers/index.js';
 import { FIRST_WEEK_DAY, LAST_WEEK_DAY } from '../../constants/index.js';
 
-// INFO: Класс генерации предложений на основе данных из запроса для получения моковых данных
 export class TSVOfferGenerator implements OfferGenerator {
   constructor(private readonly mockData: MockServerData) {}
-  // INFO: В методе `generate` напишем код для формирования случайного объявления
   public generate(): string {
     const title = getRandomItem<string>(this.mockData.titles);
     const description = getRandomItem<string>(this.mockData.descriptions);

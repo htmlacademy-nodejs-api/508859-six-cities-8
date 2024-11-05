@@ -25,7 +25,6 @@ export class UploadFileMiddleware implements Middleware {
       }
     });
 
-    // TODO: Разобраться
     const fileFilter = (
       _: Request,
       file: Express.Multer.File,

@@ -15,7 +15,6 @@ export class TSVFileReader extends EventEmitter implements FileReader {
     super();
   }
 
-  // INFO: Разбор строки на отдельный сущности предложения
   private parseLineToOffer(line: string): Offer {
     const [
       title,
@@ -69,10 +68,7 @@ export class TSVFileReader extends EventEmitter implements FileReader {
   }
 
   private parseUser(userName: string): User {
-    // const [firstName, lastName] = fullName.split(' ');
     return {
-      // firstName: firstName || '',
-      // lastName: lastName || '',
       userName,
       email: '',
       avatarPath: '',
@@ -81,7 +77,6 @@ export class TSVFileReader extends EventEmitter implements FileReader {
     };
   }
 
-  // INFO: Метод импорта из файла
   public async read(): Promise<void> {
     const readStream = createReadStream(this.filename, {
       highWaterMark: this.CHUNK_SIZE,

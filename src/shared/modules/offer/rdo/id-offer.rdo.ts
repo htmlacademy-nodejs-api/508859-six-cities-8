@@ -1,7 +1,7 @@
 import { Expose, Transform } from 'class-transformer';
 
-export class IdOfferRdo {
+export class IdOfferRDO {
   @Expose()
-  @Transform((params) => params.obj._id.toString())
+  @Transform(({ obj }) => obj._id.toString())
   public id!: string;
 }

@@ -1,0 +1,32 @@
+# Пользователи
+## Создать нового пользователя
+
+POST http://localhost:6000/auth/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "ilya.kolmakov.ik@mail.ru",
+  "userName": "IlyaK",
+  "password": "qw12345678",
+  "type": "pro"
+}
+
+###
+
+## Авторизовать пользователя
+
+POST http://localhost:6000/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "ilya.kolmakov.ik@mail.ru",
+  "password": "qw12345678"
+}
+
+###
+
+## Проверить токен пользователя
+GET http://localhost:6000/auth/login HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzJhNmVhNTZlOWE4OTk0YjRiYzI5MzYiLCJpYXQiOjE3MzA4MzQxOTcsImV4cCI6MTczMTAwNjk5N30.e3m3JYV0OVdZYCKxT2fKMVGdfCu5UJv8fQ8EX47l57I
+
+###

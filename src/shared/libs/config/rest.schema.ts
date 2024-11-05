@@ -53,4 +53,16 @@ export const configRestSchema = convict<IRestSchema>({
     env: 'UPLOAD_DIRECTORY',
     default: null
   },
+  JWT_SECRET: {
+    doc: 'Secret for sign JWT',
+    format: String,
+    env: 'JWT_SECRET',
+    default: null
+  },
+  JWT_EXPIRED: {
+    doc: 'Life time JWT token',
+    format: String,
+    env: 'JWT_EXPIRED',
+    default: null
+  },
 });

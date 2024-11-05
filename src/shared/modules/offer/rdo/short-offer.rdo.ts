@@ -1,15 +1,15 @@
 import { Expose, Transform } from 'class-transformer';
 import { City, OfferType } from '../../../types/index.js';
 
-export class ShortOfferRdo {
+export class ShortOfferRDO {
   @Expose()
-  @Transform((params) => params.obj._id.toString())
+  @Transform(({ obj }) => obj._id.toString())
   public id!: string;
 
   @Expose()
   public title!: string;
 
-  @Expose()
+  @Expose({ name: 'createdAt' })
   public publicationDate!: Date;
 
   @Expose()
@@ -30,8 +30,6 @@ export class ShortOfferRdo {
   @Expose()
   public cost!: number;
 
-  // TODO: Через агрегацию добавляешь поле isFavorite, через агрегацию проверяешь
-  // TODO: есть ли id этого оффера
   @Expose()
   public isFavorite!: boolean;
 

@@ -23,10 +23,8 @@ export class MongoDatabaseClient implements DatabaseClient {
     this.isConnected = false;
   }
 
-  // TODO: public get
   public isConnectedToDatabase() {
-    // TODO: Заменить на параметр от mongoose
-    return this.isConnected; // this.mongoose?.instance?.isConnected
+    return this.isConnected;
   }
 
   public async connect(uri: string): Promise<void> {

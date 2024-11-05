@@ -16,4 +16,5 @@ export { UploadFileMiddleware } from './middleware/upload-file.middleware.js';
 export { ValidateObjectIdQueryMiddleware } from './middleware/validate-objectid-query.middleware.js';
 export { DocumentQueryExistsMiddleware } from './middleware/document-query-exists.middleware.js';
 export { DocumentBodyExistsMiddleware } from './middleware/document-body-exists.middleware.js';
-export { ValidateObjectIdBodyMiddleware } from './middleware/validate-objectid-body.middleware.js';
+export { ParseTokenMiddleware } from './middleware/parse-token.middleware.js';
+export { PrivateRouteMiddleware } from './middleware/private-route.middleware.js';

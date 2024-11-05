@@ -8,18 +8,17 @@ import { DatabaseClient, MongoDatabaseClient } from '../../shared/libs/database-
 import { Logger } from '../../shared/libs/logger/index.js';
 import { ConsoleLogger } from '../../shared/libs/logger/console.logger.js';
 import { DefaultUserService } from '../../shared/modules/user/default-user.service.js';
-import { OfferModel, UserModel } from '../../shared/entities/index.js';
+import { CommentModel, OfferModel, UserModel } from '../../shared/entities/index.js';
 import { IRestSchema } from '../../shared/libs/config/rest.schema.interface.js';
 import { Config, RestConfig } from '../../shared/libs/config/index.js';
 import { DEFAULT_USER_LOGIN, DEFAULT_USER_PASSWORD } from '../cli.constants.js';
-// import { CommentService } from '../../shared/modules/comment/comment-service.interface.js';
-// import { DefaultCommentService } from '../../shared/modules/comment/index.js';
+import { CommentService, DefaultCommentService } from '../../shared/modules/comment/index.js';
 
 export class ImportCommand implements Command {
 
   private userService!: UserService;
   private offerService!: OfferService;
-  // private commentService!: CommentService;
+  private commentService!: CommentService;
   private databaseClient!: DatabaseClient;
   private config!: Config<IRestSchema>;
   private logger!: Logger;
@@ -31,9 +30,9 @@ export class ImportCommand implements Command {
 
     this.logger = new ConsoleLogger();
     this.config = new RestConfig(this.logger);
-    // this.commentService = new DefaultCommentService(CommentModel, this.offerService);
+    this.commentService = new DefaultCommentService(CommentModel);
     this.userService = new DefaultUserService(this.logger, UserModel, this.offerService);
-    this.offerService = new DefaultOfferService(this.logger, OfferModel);
+    this.offerService = new DefaultOfferService(this.logger, OfferModel, this.commentService);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
 
@@ -77,7 +76,6 @@ export class ImportCommand implements Command {
 
   }
 
-  // TODO: В --help команду нужно добавить аргументы, которые передаем
   public async execute(filename: string, login: string, password: string, host: string, dbname: string): Promise<void> {
     const uri = getMongoURI(login, password, host, this.config.get('DB_PORT'), dbname);
 
