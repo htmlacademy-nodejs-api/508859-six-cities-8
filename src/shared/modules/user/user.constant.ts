@@ -8,3 +8,5 @@ export const USER_DTO_CONSTRAINTS = {
     MAX_LENGTH: 12
   },
 } as const;
+
+export const DEFAULT_AVATAR_FILE_NAME = 'default-avatar.jpg';

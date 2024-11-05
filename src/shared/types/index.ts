@@ -10,3 +10,4 @@ export { DocumentExists } from './document-exists.interface.js';
 
 export { MockServerData } from './mock-server-data.interface.js';
 export { ParamOfferId } from './param-offerid.type.js';
+export { ParamUserId } from './param-userid.type.js';

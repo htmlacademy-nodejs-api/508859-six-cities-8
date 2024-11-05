@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsOptional, IsString, Length } from 'class-validator';
+import { IsEmail, IsEnum, IsString, Length } from 'class-validator';
 
 import { USER_DTO_CONSTRAINTS } from '../user.constant.js';
 import { UserType } from '../../../types/user-type.enum.js';
@@ -6,10 +6,6 @@ import { UserType } from '../../../types/user-type.enum.js';
 export class CreateUserDTO {
   @IsEmail()
   public email!: string;
-
-  @IsOptional()
-  @IsString()
-  public avatarPath?: string;
 
   @IsString()
   @Length(USER_DTO_CONSTRAINTS.USERNAME.MIN_LENGTH, USER_DTO_CONSTRAINTS.USERNAME.MAX_LENGTH)

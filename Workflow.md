@@ -128,5 +128,7 @@ DB_NAME=collection_name - Имя базы данных
 UPLOAD_DIRECTORY=directory_path - Путь до хранения файлов в корне сервера
 JWT_SECRET=secret - Секрет для аутентификации пользователя по JWT токену
 JWT_EXPIRED=2d - Время жизни токена аутенификации
+HOST=localhost - Имя хоста, на котором запущен сервис
+STATIC_DIRECTORY_PATH=static_directory_path - Название директории для статичных файлов
 
 
