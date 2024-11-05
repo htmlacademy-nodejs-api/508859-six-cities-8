@@ -1,11 +1,11 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 
-import { 
-  BaseController, 
-  HttpError, 
-  HttpMethod, 
-  ValidateDtoMiddleware, 
+import {
+  BaseController,
+  HttpError,
+  HttpMethod,
+  ValidateDtoMiddleware,
 } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { COMPONENT } from '../../constants/index.js';

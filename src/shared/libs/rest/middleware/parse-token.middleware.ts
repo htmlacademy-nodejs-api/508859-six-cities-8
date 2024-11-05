@@ -20,7 +20,7 @@ export class ParseTokenMiddleware implements Middleware {
 
   public async execute(req: Request, _res: Response, next: NextFunction): Promise<void> {
     const authorizationHeader = req.headers?.authorization?.split(' ') || [];
-    
+
     if (!authorizationHeader.length) {
       return next();
     }

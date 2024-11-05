@@ -1,14 +1,14 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 
-import { 
-  BaseController, 
-  DocumentBodyExistsMiddleware, 
-  DocumentExistsMiddleware, 
-  HttpError, 
-  HttpMethod, 
-  PrivateRouteMiddleware, 
-  UploadFileMiddleware, 
+import {
+  BaseController,
+  DocumentBodyExistsMiddleware,
+  DocumentExistsMiddleware,
+  HttpError,
+  HttpMethod,
+  PrivateRouteMiddleware,
+  UploadFileMiddleware,
   ValidateObjectIdMiddleware,
 } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
