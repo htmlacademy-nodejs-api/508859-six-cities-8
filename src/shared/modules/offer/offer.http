@@ -20,7 +20,7 @@ Content-Type: application/json
 ## Добавить новое предложение
 POST http://localhost:6000/offers HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtYWlsLnJ1IiwidXNlck5hbWUiOiJJbHlhSyIsImlkIjoiNjcyODc5YzZhZmNiZmFmOGI3YzQxM2FiIiwiaWF0IjoxNzMwNzA2Mjk0LCJleHAiOjE3MzA4NzkwOTR9.HryFJPl7jJPSn1iRFLlUBLxO8nh6u8RT5kwXwRMwhVU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzJhNmVhNTZlOWE4OTk0YjRiYzI5MzYiLCJpYXQiOjE3MzA4MzQxOTcsImV4cCI6MTczMTAwNjk5N30.e3m3JYV0OVdZYCKxT2fKMVGdfCu5UJv8fQ8EX47l57I
 
 {
     "title": "Pullman Paris Tour Eiffel",
@@ -32,7 +32,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtY
     "flatCount": 1,
     "guestCount": 4,
     "cost": 4000,
-    "isPremium": true,
+    "isPremium": false,
     "conveniences": ["Washer", "Towels", "Fridge"],
     "userId": "67152f430ace5d6726f44745",
     "coordinate": {
@@ -45,15 +45,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtY
 ###
 
 ## Детальный просмотр предложения
-GET http://localhost:6000/offers/6727b44804d5909bd0be67d9 HTTP/1.1
+GET http://localhost:6000/offers/672a728273590f2d5612140c HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzJhNmVhNTZlOWE4OTk0YjRiYzI5MzYiLCJpYXQiOjE3MzA4MzQxOTcsImV4cCI6MTczMTAwNjk5N30.e3m3JYV0OVdZYCKxT2fKMVGdfCu5UJv8fQ8EX47l57I
 
 ###
 
 ## Редактирование предложения
-PATCH http://localhost:6000/offers/6728a3badfee5f482348a4eb HTTP/1.1
+PATCH http://localhost:6000/offers/672a728273590f2d5612140c HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtYWlsLnJ1IiwidXNlck5hbWUiOiJJbHlhSyIsImlkIjoiNjcyODc5YzZhZmNiZmFmOGI3YzQxM2FiIiwiaWF0IjoxNzMwNzA2Mjk0LCJleHAiOjE3MzA4NzkwOTR9.HryFJPl7jJPSn1iRFLlUBLxO8nh6u8RT5kwXwRMwhVU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzI4NzljNmFmY2JmYWY4YjdjNDEzYWIiLCJpYXQiOjE3MzA3OTg2MTAsImV4cCI6MTczMDk3MTQxMH0.ovcfrRHJMTt1np5lff3G5TziAGkzrp0BIZaH2_Jtbug
 
 {
   "title": "Cologne Country Lodge"
@@ -62,8 +63,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtY
 ###
 
 ## Удаление предложения
-DELETE http://localhost:6000/offers/6727868448704157cb5fc46e HTTP/1.1
+DELETE http://localhost:6000/offers/672a6fc8a278429be5311997 HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImlseWEua29sbWFrb3YuaUBtYWlsLnJ1IiwidXNlck5hbWUiOiJJbHlhSyIsImlkIjoiNjcyODc5YzZhZmNiZmFmOGI3YzQxM2FiIiwiaWF0IjoxNzMwNzA2Mjk0LCJleHAiOjE3MzA4NzkwOTR9.HryFJPl7jJPSn1iRFLlUBLxO8nh6u8RT5kwXwRMwhVU
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzI4NzljNmFmY2JmYWY4YjdjNDEzYWIiLCJpYXQiOjE3MzA3OTg2MTAsImV4cCI6MTczMDk3MTQxMH0.ovcfrRHJMTt1np5lff3G5TziAGkzrp0BIZaH2_Jtbug
 
 ###

@@ -1,6 +1,6 @@
 import { IsMongoId } from 'class-validator';
 
-export class AddFavoriteDto {
+export class AddFavoriteDTO {
 
   @IsMongoId()
   public offerId!: string;

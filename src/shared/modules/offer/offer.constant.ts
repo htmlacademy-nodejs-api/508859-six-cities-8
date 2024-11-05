@@ -1,6 +1,7 @@
 export const DEFAULT_OFFER_COUNT = 60;
 export const MAX_PREMIUM_OFFER_COUNT = 3;
 export const MAX_OFFER_COUNT = 300;
+export const MAX_NUM_AFTER_DIGIT = 2;
 
 export const OFFER_DTO_CONSTRAINTS = {
   TITLE: {

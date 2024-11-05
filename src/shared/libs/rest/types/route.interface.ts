@@ -6,6 +6,6 @@ import { Middleware } from '../middleware/middleware.interface.js';
 export interface Route {
   path: string;
   method: HttpMethod;
-  handler: (req: Request, res: Response, next: NextFunction) => void; // TODO: Тип MaybePromise
+  handler: (req: Request, res: Response, next: NextFunction) => Promise<void>;
   middlewares?: Middleware[];
 }

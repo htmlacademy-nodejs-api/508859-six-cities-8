@@ -125,5 +125,8 @@ DB_USER=admin - Логин к базе данных
 DB_PASSWORD=password - Пароль к базе данных
 DB_PORT=27017 - Порт для подключения к базе данных
 DB_NAME=collection_name - Имя базы данных
+UPLOAD_DIRECTORY=directory_path - Путь до хранения файлов в корне сервера
+JWT_SECRET=secret - Секрет для аутентификации пользователя по JWT токену
+JWT_EXPIRED=2d - Время жизни токена аутенификации
 
 

@@ -12,10 +12,10 @@ export class HelpCommand implements Command {
         ${chalk.cyan('Примеры:')}
             ${chalk.green('cli.js --<command> [--arguments]')}
         ${chalk.cyan('Команды:')}
-            ${chalk.green('--version')}:                    ${chalk.gray('# выводит номер версии (показывает текущую версию проекта)')}
-            ${chalk.green('--help')}:                       ${chalk.gray('# печатает этот текст (выводит подсказку со списком всех команд)')}
-            ${chalk.green('--import')} <path>:              ${chalk.gray('# импортирует данные из TSV (по пути path парсит данные из файла tsv для моковых данных)')}
-            ${chalk.green('--generate')} <n> <path> <url>:  ${chalk.gray('# генерирует произвольное количество тестовых данных')}
+            ${chalk.green('--version')}:                                                         ${chalk.gray('# выводит номер версии (показывает текущую версию проекта)')}
+            ${chalk.green('--help')}:                                                            ${chalk.gray('# печатает этот текст (выводит подсказку со списком всех команд)')}
+            ${chalk.green('--import')} <path> <filename> <login> <password> <host> <dbname>:     ${chalk.gray('# импортирует данные из TSV (по пути path парсит данные из файла tsv для моковых данных)')}
+            ${chalk.green('--generate')} <n> <path> <url>:                                       ${chalk.gray('# генерирует произвольное количество тестовых данных')}
     `);
   }
 }

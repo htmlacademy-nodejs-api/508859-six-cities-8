@@ -9,7 +9,6 @@ import { createAuthContainer } from './shared/modules/auth/index.js';
 import { RestApplication } from './rest/index.js';
 import { COMPONENT } from './shared/constants/index.js';
 
-// INFO: Точка входа в приложение
 async function bootstrap() {
   const appContainer = Container.merge(
     createRestApplicationContainer(),

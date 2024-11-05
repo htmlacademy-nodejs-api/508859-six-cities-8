@@ -6,15 +6,14 @@ import { Logger } from '../../libs/logger/index.js';
 import { COMPONENT } from '../../constants/component.constant.js';
 import { OfferService } from './offer-service.interface.js';
 import { fillDTO } from '../../helpers/common.js';
-import { FullOfferRdo } from './rdo/full-offer.rdo.js';
+import { FullOfferRDO } from './rdo/full-offer.rdo.js';
 import { StatusCodes } from 'http-status-codes';
-import { UpdateOfferDto } from './dto/update-offer.dto.js';
+import { UpdateOfferDTO } from './dto/update-offer.dto.js';
 import { DEFAULT_OFFER_COUNT, MAX_OFFER_COUNT } from './offer.constant.js';
-import { IdOfferRdo } from './rdo/id-offer.rdo.js';
+import { IdOfferRDO } from './rdo/id-offer.rdo.js';
 import { CreateOfferRequest } from './types/create-offer-request.type.js';
-import { CommentService } from '../comment/index.js';
-import { CreateOfferDto } from './dto/create-offer.dto.js';
-import { ShortOfferRdo } from './rdo/short-offer.rdo.js';
+import { CreateOfferDTO } from './dto/create-offer.dto.js';
+import { ShortOfferRDO } from './rdo/short-offer.rdo.js';
 import { RequestPremiumQuery } from './types/request-premium-query.type.js';
 import { City } from '../../types/city.enum.js';
 import { ParamOfferId } from '../../types/index.js';
@@ -24,7 +23,6 @@ export class OfferController extends BaseController {
   constructor(
     @inject(COMPONENT.LOGGER) protected readonly logger: Logger,
     @inject(COMPONENT.OFFER_SERVICE) private readonly offerService: OfferService,
-    @inject(COMPONENT.COMMENT_SERVICE) private readonly commentService: CommentService // TODO: Убрать!
   ) {
     super(logger);
 
@@ -36,7 +34,7 @@ export class OfferController extends BaseController {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new PrivateRouteMiddleware(), new ValidateDtoMiddleware(CreateOfferDto)]
+      middlewares: [new PrivateRouteMiddleware(), new ValidateDtoMiddleware(CreateOfferDTO)]
     });
     this.addRoute({
       path: '/:offerId',
@@ -53,7 +51,7 @@ export class OfferController extends BaseController {
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
-        new ValidateDtoMiddleware(UpdateOfferDto),
+        new ValidateDtoMiddleware(UpdateOfferDTO),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
       ]
     });
@@ -68,10 +66,11 @@ export class OfferController extends BaseController {
       ] });
   }
 
-  public async index({ query } : Request<unknown, unknown, unknown, RequestQuery>, res: Response): Promise<void> {
-    // TODO: Опционально сделать middleware для limit (опционально)
+  public async index({ query, tokenPayload } : Request<unknown, unknown, unknown, RequestQuery>, res: Response): Promise<void> {
     const limitNum = Number(query?.limit);
     const limit = query?.limit && !Number.isNaN(limitNum) && limitNum < MAX_OFFER_COUNT ? limitNum : DEFAULT_OFFER_COUNT;
+    const userId = tokenPayload?.sub;
+
 
     if (!Number.isSafeInteger(limit)) {
       throw new HttpError(
@@ -81,14 +80,15 @@ export class OfferController extends BaseController {
       );
     }
 
-    const offers = await this.offerService.find(limit);
+    const offers = await this.offerService.find(limit, userId);
 
-    const responseData = fillDTO(ShortOfferRdo, offers);
+    const responseData = fillDTO(ShortOfferRDO, offers);
     this.ok(res, responseData);
   }
 
-  public async findPremium({ query }: Request<unknown, unknown, unknown, RequestPremiumQuery>, res: Response): Promise<void> {
+  public async findPremium({ query, tokenPayload }: Request<unknown, unknown, unknown, RequestPremiumQuery>, res: Response): Promise<void> {
     const city = query?.city;
+    const userId = tokenPayload?.sub;
 
     if (!city) {
       throw new HttpError(
@@ -105,9 +105,9 @@ export class OfferController extends BaseController {
         'OfferController'
       );
     }
-    const offers = await this.offerService.findByPremium(city);
+    const offers = await this.offerService.findByPremium(city as City, userId);
 
-    const responseData = fillDTO(ShortOfferRdo, offers);
+    const responseData = fillDTO(ShortOfferRDO, offers);
     this.ok(res, responseData);
   }
 
@@ -115,40 +115,36 @@ export class OfferController extends BaseController {
     { body, tokenPayload }: CreateOfferRequest,
     res: Response
   ): Promise<void> {
-    // -? получаем ли мы здесь расширинного автора
-    const result = await this.offerService.create({...body, userId: tokenPayload.id });
-    const offer = await this.offerService.findById(result.id);
-    this.created(res, fillDTO(FullOfferRdo, offer));
+    const result = await this.offerService.create({...body, userId: tokenPayload?.sub });
+    this.created(res, fillDTO(FullOfferRDO, result));
   }
 
-  public async show({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+  public async show({ params, tokenPayload }: Request<ParamOfferId>, res: Response): Promise<void> {
     const offerId = String(params?.offerId);
+    const userId = tokenPayload?.sub;
 
-    const currentOffer = await this.offerService.findById(offerId);
+    const currentOffer = await this.offerService.findById(offerId, userId);
 
-    const responseData = fillDTO(FullOfferRdo, currentOffer);
+    const responseData = fillDTO(FullOfferRDO, currentOffer);
     this.ok(res, responseData);
   }
 
   public async update(
-    { body, params }: Request<ParamOfferId, unknown, UpdateOfferDto>,
+    { body, params, tokenPayload }: Request<ParamOfferId, unknown, UpdateOfferDTO>,
     res: Response
   ): Promise<void> {
     const offerId = String(params?.offerId);
-    const updatedOffer = await this.offerService.updateById(offerId, body);
+    const updatedOffer = await this.offerService.updateById(offerId, {...body, userId: tokenPayload?.sub });
 
-    const responseData = fillDTO(FullOfferRdo, updatedOffer);
+    const responseData = fillDTO(FullOfferRDO, updatedOffer);
     this.ok(res, responseData);
   }
 
   public async delete({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
-    // TODO: Переопределять request (опционально)
     const offerId = String(params?.offerId);
     const deletedOffer = await this.offerService.deleteById(offerId);
-    // -? Circular dependency found: Symbol(kRestApplication) --> Symbol(kOfferController) --> Symbol(kOfferService) --> Symbol(kCommentService) --> Symbol(kOfferService)
-    await this.commentService.deleteByOfferId(offerId);
 
-    const responseData = fillDTO(IdOfferRdo, deletedOffer);
+    const responseData = fillDTO(IdOfferRDO, deletedOffer);
     this.ok(res, responseData);
   }
 }

@@ -4,13 +4,14 @@ import { SignJWT } from 'jose';
 
 import { AuthService } from './auth-service.interface.js';
 import { Logger } from '../../libs/logger/index.js';
-import { LoginUserDto, UserService } from '../user/index.js';
+import { UserService } from '../user/index.js';
 import { TokenPayload } from './types/tokenPayload.js';
 import { Config, IRestSchema } from '../../libs/config/index.js';
 import { UserNotFoundException, UserPasswordIncorrectException } from './errors/index.js';
-import { JWT_ALGORITHM, JWT_EXPIRED } from './auth.constant.js';
+import { JWT_ALGORITHM } from './auth.constant.js';
 import { COMPONENT } from '../../constants/component.constant.js';
 import { UserEntity } from '../../entities/index.js';
+import { LoginUserDTO } from './dto/login-user.dto.js';
 
 @injectable()
 export class DefaultAuthService implements AuthService {
@@ -24,20 +25,18 @@ export class DefaultAuthService implements AuthService {
     const jwtSecret = this.config.get('JWT_SECRET');
     const secretKey = crypto.createSecretKey(jwtSecret, 'utf-8');
     const tokenPayload: TokenPayload = {
-      email: user.email,
-      userName: user.userName,
-      id: user.id,
+      sub: user.id,
     };
 
     this.logger.info(`Create token for ${user.email}`);
     return new SignJWT(tokenPayload)
       .setProtectedHeader({ alg: JWT_ALGORITHM })
       .setIssuedAt()
-      .setExpirationTime(JWT_EXPIRED)
+      .setExpirationTime(this.config.get('JWT_EXPIRED'))
       .sign(secretKey);
   }
 
-  public async verify(dto: LoginUserDto): Promise<UserEntity> {
+  public async verify(dto: LoginUserDTO): Promise<UserEntity> {
     const user = await this.userService.findByEmail(dto.email);
     if (! user) {
       this.logger.warn(`User with ${dto.email} not found`);

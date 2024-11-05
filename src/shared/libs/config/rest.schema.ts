@@ -59,4 +59,10 @@ export const configRestSchema = convict<IRestSchema>({
     env: 'JWT_SECRET',
     default: null
   },
+  JWT_EXPIRED: {
+    doc: 'Life time JWT token',
+    format: String,
+    env: 'JWT_EXPIRED',
+    default: null
+  },
 });

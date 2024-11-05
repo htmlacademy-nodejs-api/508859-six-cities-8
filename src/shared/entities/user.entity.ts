@@ -2,6 +2,7 @@ import { defaultClasses, prop, modelOptions, Ref } from '@typegoose/typegoose';
 import { User, UserType } from '../types/index.js';
 import { createSHA256 } from '../helpers/index.js';
 import { OfferEntity } from './offer.entity.js';
+import { DEFAULT_USER_AVATAR } from '../constants/index.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface UserEntity extends defaultClasses.Base {}
@@ -21,8 +22,8 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
 @prop({ unique: true, required: true })
 public email!: string;
 
-@prop({ default: 'default-avatar.jpg' })
-public avatarPath!: string;
+@prop({ default: DEFAULT_USER_AVATAR })
+public avatarPath?: string;
 
 @prop({ required: true })
 public password!: string;
@@ -36,13 +37,16 @@ public type!: UserType;
 })
 public favorites?: Ref<OfferEntity>[];
 
-constructor(userData: User) {
+constructor(userData: User, password: string, salt: string) {
   super();
 
   this.email = userData.email;
   this.avatarPath = userData.avatarPath;
   this.userName = userData.userName;
   this.type = userData.type;
+
+
+  this.setPassword(password, salt);
 }
 
 public setPassword(password: string, salt: string) {

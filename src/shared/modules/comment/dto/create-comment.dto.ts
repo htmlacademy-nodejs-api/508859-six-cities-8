@@ -1,7 +1,7 @@
 import { IsInt, IsMongoId, IsString, Length, Max, Min } from 'class-validator';
 import { COMMENT_DTO_CONSTRAINTS } from '../comment.constant.js';
 
-export class CreateCommentDto {
+export class CreateCommentDTO {
   @IsString()
   @Length(COMMENT_DTO_CONSTRAINTS.TEXT.MIN_LENGTH, COMMENT_DTO_CONSTRAINTS.TEXT.MAX_LENGTH)
   public text!: string;
@@ -13,7 +13,4 @@ export class CreateCommentDto {
 
   @IsMongoId()
   public offerId!: string;
-
-  // -? А не стоит ли убрать параметр, если мы из токена получаем  userId
-  public userId!: string;
 }

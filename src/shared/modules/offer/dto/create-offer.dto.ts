@@ -20,7 +20,7 @@ import { Type } from 'class-transformer';
 import { CoordinateDTO } from './coordinate.dto.js';
 import { OFFER_DTO_CONSTRAINTS } from '../offer.constant.js';
 
-export class CreateOfferDto {
+export class CreateOfferDTO {
   @IsString()
   @MinLength(OFFER_DTO_CONSTRAINTS.TITLE.MIN_LENGTH)
   @MaxLength(OFFER_DTO_CONSTRAINTS.TITLE.MAX_LENGTH)
@@ -71,6 +71,4 @@ export class CreateOfferDto {
   @IsObject()
   @Type(() => CoordinateDTO)
   public coordinate!: Coordinate;
-
-  public userId?: string;
 }

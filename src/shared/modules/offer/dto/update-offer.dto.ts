@@ -21,7 +21,7 @@ import { Type } from 'class-transformer';
 import { CoordinateDTO } from './coordinate.dto.js';
 import { OFFER_DTO_CONSTRAINTS } from '../offer.constant.js';
 
-export class UpdateOfferDto {
+export class UpdateOfferDTO {
   @IsOptional()
   @MinLength(OFFER_DTO_CONSTRAINTS.TITLE.MIN_LENGTH)
   @MaxLength(OFFER_DTO_CONSTRAINTS.TITLE.MAX_LENGTH)

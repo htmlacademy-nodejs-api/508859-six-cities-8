@@ -8,11 +8,6 @@ import { TSVFileWriter } from '../../shared/libs/file-writer/index.js';
 import { TSVOfferGenerator } from '../../shared/libs/offer-generator/index.js';
 import { DECIMAL_RADIX } from '../../shared/constants/index.js';
 
-// * `<count>` — обязательный. Количество объявлений для генерации.
-// * `<filepath>` — обязательный. Путь к файлу для записи результата.
-// * `<url>` — обязательный. URL сервиса (JSON-server).
-// Example: ./cli.js --generate 10 ./src/mocks/mock-offers.tsv http://localhost:3123/api
-// npm run ts ./src/main.cli.ts -- --generate 100 ./src/mocks/test-data.tsv http://localhost:3123/api
 export class GenerateCommand implements Command {
   private initialData?: MockServerData;
 
@@ -39,7 +34,6 @@ export class GenerateCommand implements Command {
     return '--generate';
   }
 
-  // INFO: Получение параметров из аргументов команды и выполнение команды
   public async execute(...parameters: string[]): Promise<void> {
     const [count, filepath, url] = parameters;
     if (count && filepath && url) {

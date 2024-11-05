@@ -1,21 +1,23 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 
-import { BaseController, DocumentBodyExistsMiddleware, DocumentExistsMiddleware, HttpError, HttpMethod, PrivateRouteMiddleware, UploadFileMiddleware, ValidateDtoMiddleware, ValidateObjectIdBodyMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
+import { 
+  BaseController, 
+  DocumentBodyExistsMiddleware, 
+  DocumentExistsMiddleware, 
+  HttpError, 
+  HttpMethod, 
+  PrivateRouteMiddleware, 
+  UploadFileMiddleware, 
+  ValidateObjectIdMiddleware,
+} from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
-import { CreateUserRequest } from './types/create-user-request.type.js';
 import { COMPONENT } from '../../constants/index.js';
 import { UserService } from './user-service.interface.js';
 import { Config, IRestSchema } from '../../libs/config/index.js';
 import { StatusCodes } from 'http-status-codes';
 import { fillDTO } from '../../helpers/index.js';
-import { UserRdo } from './rdo/user.rdo.js';
-import { LoginUserRequest } from './types/login-user-request.type.js';
-import { CreateUserDto } from './dto/create-user.dto.js';
-import { LoginUserDto } from './dto/login-user.dto.js';
-import { OfferService, ShortOfferRdo } from '../offer/index.js';
-import { AuthService } from '../auth/index.js';
-import { LoggedUserRdo } from './rdo/logged-user.rdo.js';
+import { OfferService, ShortOfferRDO } from '../offer/index.js';
 import { ParamOfferId } from '../../types/index.js';
 import { AddFavoriteRequest } from './types/add-favorite-request.type.js';
 
@@ -26,14 +28,10 @@ export class UserController extends BaseController {
     @inject(COMPONENT.USER_SERVICE) private readonly userService: UserService,
     @inject(COMPONENT.OFFER_SERVICE) private readonly offerService: OfferService,
     @inject(COMPONENT.CONFIG) private readonly configService: Config<IRestSchema>,
-    @inject(COMPONENT.AUTH_SERVICE) private readonly authService: AuthService,
   ) {
     super(logger);
     this.logger.info('Register routes for UserController');
 
-    this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.create, middlewares: [new ValidateDtoMiddleware(CreateUserDto)] });
-    this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login, middlewares: [new ValidateDtoMiddleware(LoginUserDto)] });
-    this.addRoute({ path: '/login', method: HttpMethod.Get, handler: this.checkAuthenticate });
     this.addRoute({
       path: '/favorites',
       method: HttpMethod.Get,
@@ -46,11 +44,9 @@ export class UserController extends BaseController {
       handler: this.addFavoriteForUser,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateObjectIdBodyMiddleware('offerId'),
         new DocumentBodyExistsMiddleware(this.offerService, 'Offer', 'offerId')
       ]
     });
-    // -? Нужно спросить необходимость инжектировать сервис для проверки
     this.addRoute({
       path: '/favorites/:offerId',
       method: HttpMethod.Delete,
@@ -72,53 +68,8 @@ export class UserController extends BaseController {
     });
   }
 
-  public async checkAuthenticate({ tokenPayload: { email }}: Request, res: Response) {
-    const foundedUser = await this.userService.findByEmail(email);
-
-    if (!foundedUser) {
-      throw new HttpError(
-        StatusCodes.UNAUTHORIZED,
-        'Unauthorized',
-        'UserController'
-      );
-    }
-
-    this.ok(res, fillDTO(LoggedUserRdo, foundedUser));
-  }
-
-  public async create(
-    { body }: CreateUserRequest,
-    res: Response,
-  ): Promise<void> {
-    const existsUser = await this.userService.findByEmail(body.email);
-
-    if (existsUser) {
-      throw new HttpError(
-        StatusCodes.CONFLICT,
-        `User with email «${body.email}» exists.`,
-        'UserController'
-      );
-    }
-
-    const result = await this.userService.create(body, this.configService.get('SALT'));
-    this.created(res, fillDTO(UserRdo, result));
-  }
-
-  public async login(
-    { body }: LoginUserRequest,
-    res: Response,
-  ): Promise<void> {
-    const user = await this.authService.verify(body);
-    const token = await this.authService.authenticate(user);
-    const responseData = fillDTO(LoggedUserRdo, {
-      email: user.email,
-      token,
-    });
-    this.ok(res, responseData);
-  }
-
   public async findFavoritesForUser({ tokenPayload }: Request, res: Response) {
-    const userId = tokenPayload?.id;
+    const userId = tokenPayload?.sub;
 
     const currentUser = await this.userService.findById(userId);
 
@@ -131,12 +82,12 @@ export class UserController extends BaseController {
     }
 
     const offers = await this.userService.findFavoritesForUser(userId);
-    this.ok(res, fillDTO(ShortOfferRdo, offers));
+    this.ok(res, fillDTO(ShortOfferRDO, offers));
   }
 
   public async addFavoriteForUser({ body, tokenPayload }: AddFavoriteRequest, res: Response) {
     const offerId = body?.offerId;
-    const userId = tokenPayload?.id;
+    const userId = tokenPayload?.sub;
 
     const favoriteList = await this.userService.findFavoritesForUser(userId);
 
@@ -155,7 +106,7 @@ export class UserController extends BaseController {
   public async deleteFavoriteForUser({ params, tokenPayload }: Request<ParamOfferId>, res: Response) {
     const { offerId } = params;
 
-    const userId = tokenPayload.id;
+    const userId = tokenPayload?.sub;
 
     if (!offerId) {
       throw new HttpError(

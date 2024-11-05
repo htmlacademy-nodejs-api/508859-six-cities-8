@@ -17,10 +17,11 @@ export class RestApplication {
     @inject(COMPONENT.LOGGER) private readonly logger: Logger,
     @inject(COMPONENT.CONFIG) private readonly config: Config<IRestSchema>,
     @inject(COMPONENT.DATABASE_CLIENT) private readonly databaseClient: DatabaseClient,
-    @inject(COMPONENT.OFFER_CONTROLLER) private readonly offerController: Controller,
-    @inject(COMPONENT.EXCEPTION_FILTER) private readonly appExceptionFilter: ExceptionFilter,
     @inject(COMPONENT.USER_CONTROLLER) private readonly userController: Controller,
+    @inject(COMPONENT.AUTH_CONTROLLER) private readonly authController: Controller,
+    @inject(COMPONENT.OFFER_CONTROLLER) private readonly offerController: Controller,
     @inject(COMPONENT.COMMENT_CONTROLLER) private readonly commentController: Controller,
+    @inject(COMPONENT.EXCEPTION_FILTER) private readonly appExceptionFilter: ExceptionFilter,
     @inject(COMPONENT.AUTH_EXCEPTION_FILTER) private readonly authExceptionFilter: ExceptionFilter,
   ) {}
 
@@ -42,8 +43,9 @@ export class RestApplication {
   }
 
   private async initControllers() {
-    this.server.use('/offers', this.offerController.router);
+    this.server.use('/auth', this.authController.router);
     this.server.use('/users', this.userController.router);
+    this.server.use('/offers', this.offerController.router);
     this.server.use('/comments', this.commentController.router);
   }
 
