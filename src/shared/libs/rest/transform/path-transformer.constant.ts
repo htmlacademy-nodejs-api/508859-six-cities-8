@@ -1,9 +1,9 @@
 export const DEFAULT_STATIC_IMAGES = [
-    'default-avatar.png',
+  'default-avatar.png',
 ];
-  
-  export const STATIC_RESOURCE_FIELDS = [
-    'avatarPath',
-    'images',
-    'previewImg'
-  ];
+
+export const STATIC_RESOURCE_FIELDS = [
+  'avatarPath',
+  'images',
+  'previewImg'
+];
