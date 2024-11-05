@@ -10,6 +10,7 @@ import { OfferEntity, UserEntity } from '../../entities/index.js';
 import { OfferService } from '../offer/offer-service.interface.js';
 import { Types } from 'mongoose';
 import { CreateUserDTO } from './dto/create-user.dto.js';
+import { DEFAULT_AVATAR_FILE_NAME } from './user.constant.js';
 
 @injectable()
 export class DefaultUserService implements UserService {
@@ -21,7 +22,7 @@ export class DefaultUserService implements UserService {
   ) {}
 
   public async create(dto: CreateUserDTO, salt: string): Promise<DocumentType<UserEntity>> {
-    const user = new UserEntity(dto, dto.password, salt);
+    const user = new UserEntity({ ...dto, avatarPath: DEFAULT_AVATAR_FILE_NAME }, dto.password, salt);
 
     const result = await this.userModel.create(user);
     this.logger.info(`New user created: ${user.email}`);

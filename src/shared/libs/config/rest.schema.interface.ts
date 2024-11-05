@@ -9,4 +9,6 @@ export interface IRestSchema {
     UPLOAD_DIRECTORY: string;
     JWT_SECRET: string;
     JWT_EXPIRED: string;
+    HOST: string;
+    STATIC_DIRECTORY_PATH: string;
 }

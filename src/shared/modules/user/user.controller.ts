@@ -18,8 +18,9 @@ import { Config, IRestSchema } from '../../libs/config/index.js';
 import { StatusCodes } from 'http-status-codes';
 import { fillDTO } from '../../helpers/index.js';
 import { OfferService, ShortOfferRDO } from '../offer/index.js';
-import { ParamOfferId } from '../../types/index.js';
+import { ParamOfferId, ParamUserId } from '../../types/index.js';
 import { AddFavoriteRequest } from './types/add-favorite-request.type.js';
+import { UploadAvatarRDO } from './rdo/upload-avatar.rdo.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -62,6 +63,7 @@ export class UserController extends BaseController {
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('userId'),
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatarPath'),
       ]
@@ -130,9 +132,10 @@ export class UserController extends BaseController {
     this.noContent(res, updatedUser);
   }
 
-  public async uploadAvatar(req: Request, res: Response) {
-    this.created(res, {
-      filepath: req.file?.path
-    });
+  public async uploadAvatar({ params, file }: Request<ParamUserId>, res: Response) {
+    const { userId } = params;
+    const uploadFile = { avatarPath: file?.filename };
+    await this.userService.updateById(userId, uploadFile);
+    this.created(res, fillDTO(UploadAvatarRDO, uploadFile));
   }
 }
