@@ -5,6 +5,7 @@ import {
   BaseController,
   HttpError,
   HttpMethod,
+  PrivateRouteMiddleware,
   ValidateDtoMiddleware,
 } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
@@ -27,11 +28,11 @@ export class AuthController extends BaseController {
     @inject(COMPONENT.AUTH_SERVICE) private readonly authService: AuthService,
   ) {
     super(logger);
-    this.logger.info('Register routes for UserController');
+    this.logger.info('Register routes for AuthController');
 
     this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.register, middlewares: [new ValidateDtoMiddleware(CreateUserDTO)] });
     this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login, middlewares: [new ValidateDtoMiddleware(LoginUserDTO)] });
-    this.addRoute({ path: '/login', method: HttpMethod.Get, handler: this.checkAuthenticate });
+    this.addRoute({ path: '/login', method: HttpMethod.Get, handler: this.checkAuthenticate, middlewares: [new PrivateRouteMiddleware()] });
   }
 
   public async register(
@@ -44,7 +45,7 @@ export class AuthController extends BaseController {
       throw new HttpError(
         StatusCodes.CONFLICT,
         `User with email «${body.email}» exists.`,
-        'UserController'
+        'AuthController'
       );
     }
 
@@ -73,7 +74,7 @@ export class AuthController extends BaseController {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
         'Unauthorized',
-        'UserController'
+        'AuthController'
       );
     }
 

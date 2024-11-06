@@ -8,7 +8,7 @@ import { HttpError } from '../errors/index.js';
 export class ValidateObjectIdQueryMiddleware implements Middleware {
   constructor(private query: string) {}
 
-  public execute({ query }: Request, _res: Response, next: NextFunction): void {
+  public execute({ query }: Request, _: Response, next: NextFunction): void {
     const objectId = query[this.query];
 
     if (Types.ObjectId.isValid(String(objectId))) {
