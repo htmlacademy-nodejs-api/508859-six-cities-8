@@ -19,7 +19,7 @@ POST http://localhost:6000/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "ilya.kolmakov.ik@mail.ru",
+  "email": "ilkolmakov@yandex.ru",
   "password": "qw12345678"
 }
 
@@ -27,6 +27,6 @@ Content-Type: application/json
 
 ## Проверить токен пользователя
 GET http://localhost:6000/auth/login HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzJhNmVhNTZlOWE4OTk0YjRiYzI5MzYiLCJpYXQiOjE3MzA4MzQxOTcsImV4cCI6MTczMTAwNjk5N30.e3m3JYV0OVdZYCKxT2fKMVGdfCu5UJv8fQ8EX47l57I
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2NzJiM2NiYmIwNjhiMmYwY2U5NWYwNTAiLCJpYXQiOjE3MzA4ODY4NDksImV4cCI6MTczMTA1OTY0OX0.TT5zxFnHQh0Y6K2WmHUxTDPZ9SmpYMzbkvwlHE21i5k
 
 ###
