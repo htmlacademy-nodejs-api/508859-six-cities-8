@@ -70,7 +70,7 @@ export class DefaultOfferService implements OfferService {
       ...authorAggregation,
       ...favoriteAggregation(userId, offerId),
     ])
-    .exec();
+      .exec();
 
     if (!data[0]) {
       return null;
