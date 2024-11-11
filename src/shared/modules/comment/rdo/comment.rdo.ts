@@ -11,6 +11,9 @@ export class CommentRDO {
   @Expose({ name: 'createdAt' })
   public publicationDate!: string;
 
+  @Expose()
+  public rating!: number;
+
   @Expose({ name: 'userId'})
   @Type(() => UserRDO)
   public user!: UserRDO;

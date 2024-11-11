@@ -57,15 +57,26 @@ export class DefaultOfferService implements OfferService {
       .exec();
   }
 
+  public async findBySimpleId(offerId: string): Promise<DocumentType<OfferEntity> | null> {
+    const data = await this.offerModel.findById(offerId).populate('userId').exec();
+
+    return data;
+  }
+
   public async findById(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null> {
     const data = await this.offerModel.aggregate([
       { $match: { '_id': new Types.ObjectId(offerId) } },
       ...commentAggregation,
       ...authorAggregation,
       ...favoriteAggregation(userId, offerId),
-    ]).exec();
+    ])
+    .exec();
 
-    return data[0] || null;
+    if (!data[0]) {
+      return null;
+    }
+
+    return data[0];
   }
 
   public async findByPremium(city: City, userId: string): Promise<DocumentType<OfferEntity>[]> {
