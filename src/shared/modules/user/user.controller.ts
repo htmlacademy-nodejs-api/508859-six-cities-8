@@ -17,7 +17,7 @@ import { UserService } from './user-service.interface.js';
 import { Config, IRestSchema } from '../../libs/config/index.js';
 import { StatusCodes } from 'http-status-codes';
 import { fillDTO } from '../../helpers/index.js';
-import { OfferService, ShortOfferRDO } from '../offer/index.js';
+import { FullOfferRDO, OfferService } from '../offer/index.js';
 import { ParamOfferId, ParamUserId } from '../../types/index.js';
 import { AddFavoriteRequest } from './types/add-favorite-request.type.js';
 import { UploadAvatarRDO } from './rdo/upload-avatar.rdo.js';
@@ -63,7 +63,6 @@ export class UserController extends BaseController {
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
       middlewares: [
-        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('userId'),
         new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatarPath'),
       ]
@@ -84,7 +83,7 @@ export class UserController extends BaseController {
     }
 
     const offers = await this.userService.findFavoritesForUser(userId);
-    this.ok(res, fillDTO(ShortOfferRDO, offers));
+    this.ok(res, fillDTO(FullOfferRDO, offers));
   }
 
   public async addFavoriteForUser({ body, tokenPayload }: AddFavoriteRequest, res: Response) {

@@ -13,7 +13,6 @@ import { DEFAULT_OFFER_COUNT, MAX_OFFER_COUNT } from './offer.constant.js';
 import { IdOfferRDO } from './rdo/id-offer.rdo.js';
 import { CreateOfferRequest } from './types/create-offer-request.type.js';
 import { CreateOfferDTO } from './dto/create-offer.dto.js';
-import { ShortOfferRDO } from './rdo/short-offer.rdo.js';
 import { RequestPremiumQuery } from './types/request-premium-query.type.js';
 import { City } from '../../types/city.enum.js';
 import { ParamOfferId } from '../../types/index.js';
@@ -81,8 +80,7 @@ export class OfferController extends BaseController {
     }
 
     const offers = await this.offerService.find(limit, userId);
-
-    const responseData = fillDTO(ShortOfferRDO, offers);
+    const responseData = fillDTO(FullOfferRDO, offers);
     this.ok(res, responseData);
   }
 
@@ -106,8 +104,7 @@ export class OfferController extends BaseController {
       );
     }
     const offers = await this.offerService.findByPremium(city as City, userId);
-
-    const responseData = fillDTO(ShortOfferRDO, offers);
+    const responseData = fillDTO(FullOfferRDO, offers);
     this.ok(res, responseData);
   }
 
@@ -124,9 +121,12 @@ export class OfferController extends BaseController {
     const userId = tokenPayload?.sub;
 
     const currentOffer = await this.offerService.findById(offerId, userId);
+    const currentSimpleOffer = await this.offerService.findBySimpleId(offerId);
 
     const responseData = fillDTO(FullOfferRDO, currentOffer);
-    this.ok(res, responseData);
+    const responseSimpleData = fillDTO(FullOfferRDO, currentSimpleOffer);
+
+    this.ok(res, {...responseData, user: responseSimpleData.user });
   }
 
   public async update(
